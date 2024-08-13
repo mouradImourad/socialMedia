@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 import jwt
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -32,6 +33,32 @@ class RegisterSerializer(serializers.ModelSerializer):
             fail_silently=False,
         )
         return user
+    
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    token = serializers.CharField(read_only=True)
+
+    def validate(self, data):
+        email = data.get('email', None)
+        password = data.get('password', None)
+        user = authenticate(email=email, password=password)
+
+        if user is None:
+            raise serializers.ValidationError('Invalid login credentials')
+        
+        if not user.is_verified:
+            raise serializers.ValidationError('Email is not verified')
+
+        token = RefreshToken.for_user(user)
+        return {
+            'email': user.email,
+            'token': str(token.access_token),
+        }
+    
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,5 +70,9 @@ class EmailVerificationSerializer(serializers.Serializer):
 
     class Meta:
         fields = ['token']
+
+
+
+
 
 

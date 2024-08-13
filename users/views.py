@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, EmailVerificationSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
@@ -24,7 +24,7 @@ class RegisterView(generics.GenericAPIView):
         absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
         email_body = f'Hi {user.username}, use the link below to verify your email \n{absurl}'
 
-        print(f'Token: {token}')  # Print the token for debugging
+        print(f'Token: {token}') 
         
         send_mail(
             'Verify your email',
@@ -54,3 +54,14 @@ class VerifyEmail(generics.GenericAPIView):
             return Response({'error': 'Activation link expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)

@@ -1,6 +1,6 @@
 # users/urls.py
 from django.urls import path
-from .views import RegisterView, VerifyEmail, LoginView, LogoutView, RequestPasswordResetEmail, PasswordTokenCheckAPI, SetNewPasswordAPIView, UserProfileView, UserUpdateView, ChangePasswordView, DeactivateAccountView, ReactivateAccountView, ConfirmReactivationView
+from .views import RegisterView, VerifyEmail, LoginView, LogoutView, RequestPasswordResetEmail, PasswordTokenCheckAPI, SetNewPasswordAPIView, UserProfileView, UserUpdateView, ChangePasswordView, DeactivateAccountView, ReactivateAccountView, ConfirmReactivationView, DeleteAccountView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -16,5 +16,6 @@ urlpatterns = [
     path('account-deactivate/', DeactivateAccountView.as_view(), name='account-deactivate'),
     path('account-reactivate/', ReactivateAccountView.as_view(), name='reactivate-account'),
     path('confirm-reactivation/', ConfirmReactivationView.as_view(), name='confirm-reactivation'),
+    path('delete-account/', DeleteAccountView.as_view(), name='delete-account'),
 
 ]

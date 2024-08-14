@@ -153,7 +153,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This username is already in use.")
         return value
     
-    
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True, write_only=True)
@@ -177,10 +177,28 @@ class ChangePasswordSerializer(serializers.Serializer):
     
 
 
+class DeactivateAccountSerializer(serializers.Serializer):
+    confirmation = serializers.BooleanField(required=True)
+
+    def validate_confirmation(self, value):
+        if not value:
+            raise serializers.ValidationError("You must confirm deactivation.")
+        return value
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.is_active = False
+        user.save()
+        return user
+    
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'email', 'username', 'is_verified', 'profile_picture', 'created_at', 'updated_at')
+
+        
 
 class EmailVerificationSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=555)

@@ -1,7 +1,7 @@
 # user/views.py 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer, ChangePasswordSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer, ChangePasswordSerializer, DeactivateAccountSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -193,5 +193,25 @@ class ChangePasswordView(generics.UpdateAPIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'detail': 'Password updated successfully'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class DeactivateAccountView(generics.UpdateAPIView):
+    serializer_class = DeactivateAccountSerializer
+    model = User
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'Account deactivated successfully'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

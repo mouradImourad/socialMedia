@@ -1,3 +1,4 @@
+# user/serializers.py 
 from rest_framework import serializers
 from .models import User
 from django.core.mail import send_mail
@@ -7,6 +8,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 import jwt
 from rest_framework_simplejwt.exceptions import TokenError 
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_str, force_bytes, smart_str, smart_bytes, DjangoUnicodeDecodeError
+from rest_framework.exceptions import AuthenticationFailed
+
+
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -54,7 +62,71 @@ class LoginSerializer(serializers.Serializer):
                 'refresh': str(refresh)
             }
         raise serializers.ValidationError('Invalid credentials or unverified account')
-    
+
+
+
+class ResetPasswordEmailRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=2)
+
+    class Meta:
+        fields = ['email']
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            token = PasswordResetTokenGenerator().make_token(user)
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            current_site = 'localhost:8000'  # Change to your frontend URL
+            relative_link = reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            absurl = 'http://' + current_site + relative_link
+            email_body = f'Hi {user.username}, use the link below to reset your password \n{absurl}'
+
+            send_mail(
+                'Reset your password',
+                email_body,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False,
+            )
+        return super().validate(attrs)
+
+class SetNewPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=6, max_length=68, write_only=True)
+    token = serializers.CharField(min_length=1, write_only=True)
+    uidb64 = serializers.CharField(min_length=1, write_only=True)
+
+    class Meta:
+        fields = ['password', 'token', 'uidb64']
+
+    def validate(self, attrs):
+        try:
+            password = attrs.get('password')
+            token = attrs.get('token')
+            uidb64 = attrs.get('uidb64')
+            id = force_str(urlsafe_base64_decode(uidb64))
+            print(f'Decoded ID: {id}')
+            user = User.objects.get(id=id)
+            print(f'User: {user.email}')
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                print('Invalid token')
+                raise AuthenticationFailed('The reset link is invalid', 401)
+
+            user.set_password(password)
+            user.save()
+            return {
+                'user': user
+            }
+        except Exception as e:
+            print(f'Error: {e}')
+            raise AuthenticationFailed('The reset link is invalid', 401)
+        
+    def create(self, validated_data):
+        return validated_data
+        
+
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

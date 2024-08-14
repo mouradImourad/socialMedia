@@ -196,9 +196,6 @@ class DeactivateAccountSerializer(serializers.Serializer):
 class ReactivateAccountSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
-    class Meta:
-        fields = ['email']
-
     def validate_email(self, value):
         try:
             user = User.objects.get(email=value)
@@ -208,6 +205,7 @@ class ReactivateAccountSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Account is already active.")
         except User.DoesNotExist:
             raise serializers.ValidationError("User with this email does not exist.")
+
 
 
 

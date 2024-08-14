@@ -17,6 +17,8 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, username, password=None):
         user = self.create_user(email, username, password)
         user.is_admin = True
+        user.is_staff = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -29,6 +31,9 @@ class User(AbstractBaseUser):
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False) 
+
 
     objects = UserManager()
 
@@ -37,3 +42,10 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True

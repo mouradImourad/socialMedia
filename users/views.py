@@ -200,21 +200,16 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class DeactivateAccountView(generics.UpdateAPIView):
     serializer_class = DeactivateAccountSerializer
-    model = User
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        self.object = self.get_object()
         serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'detail': 'Account deactivated successfully'}, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'detail': 'Account deactivated successfully'}, status=status.HTTP_200_OK)
     
 
 
@@ -246,6 +241,7 @@ class ReactivateAccountView(generics.GenericAPIView):
 
 
 
+
 class ConfirmReactivationView(generics.GenericAPIView):
     serializer_class = ConfirmReactivationSerializer
     permission_classes = [AllowAny]
@@ -253,8 +249,8 @@ class ConfirmReactivationView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
         return Response({'detail': 'Account successfully reactivated'}, status=status.HTTP_200_OK)
+
 
 
 

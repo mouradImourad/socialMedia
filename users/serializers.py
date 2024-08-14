@@ -190,7 +190,47 @@ class DeactivateAccountSerializer(serializers.Serializer):
         user.is_active = False
         user.save()
         return user
-    
+
+
+
+class ReactivateAccountSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        fields = ['email']
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+            if not user.is_active:
+                return value
+            else:
+                raise serializers.ValidationError("Account is already active.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist.")
+
+
+
+class ConfirmReactivationSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=555)
+    uidb64 = serializers.CharField(max_length=100)
+
+    def validate(self, attrs):
+        try:
+            token = attrs.get('token')
+            uidb64 = attrs.get('uidb64')
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise AuthenticationFailed('Invalid or expired token', 401)
+
+            user.is_active = True
+            user.save()
+
+            return user
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist, DjangoUnicodeDecodeError):
+            raise AuthenticationFailed('Invalid token', 401)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -198,7 +238,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'username', 'is_verified', 'profile_picture', 'created_at', 'updated_at')
 
-        
+
 
 class EmailVerificationSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=555)

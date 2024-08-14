@@ -25,6 +25,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique=True)
     is_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)  
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

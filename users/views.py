@@ -1,7 +1,7 @@
 # user/views.py 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer, ChangePasswordSerializer, DeactivateAccountSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer, ChangePasswordSerializer, DeactivateAccountSerializer, ConfirmReactivationSerializer, ReactivateAccountSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -215,3 +215,47 @@ class DeactivateAccountView(generics.UpdateAPIView):
             return Response({'detail': 'Account deactivated successfully'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+class ReactivateAccountView(generics.GenericAPIView):
+    serializer_class = ReactivateAccountSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = User.objects.get(email=serializer.validated_data['email'])
+        token = PasswordResetTokenGenerator().make_token(user)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        current_site = 'localhost:8000'  # Change this to your frontend URL
+        relative_link = reverse('confirm-reactivation')
+        absurl = f'http://{current_site}{relative_link}?uidb64={uidb64}&token={token}'
+        email_body = f'Hi {user.username}, use the link below to reactivate your account \n{absurl}'
+        send_mail(
+            'Reactivate your account',
+            email_body,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
+        return Response({'detail': 'Reactivation email has been sent'}, status=status.HTTP_200_OK)
+
+
+
+
+
+class ConfirmReactivationView(generics.GenericAPIView):
+    serializer_class = ConfirmReactivationSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'detail': 'Account successfully reactivated'}, status=status.HTTP_200_OK)
+
+
+
+

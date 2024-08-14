@@ -12,6 +12,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str, force_bytes, smart_str, smart_bytes, DjangoUnicodeDecodeError
 from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.password_validation import validate_password
+
 
 
 
@@ -150,6 +152,29 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         if User.objects.exclude(pk=user.pk).filter(username=value).exists():
             raise serializers.ValidationError("This username is already in use.")
         return value
+    
+    
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if not user.check_password(attrs.get('old_password')):
+            raise serializers.ValidationError({"old_password": "Old password is not correct"})
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
+    
 
 
 class UserSerializer(serializers.ModelSerializer):

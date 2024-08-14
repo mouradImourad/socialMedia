@@ -127,6 +127,13 @@ class SetNewPasswordSerializer(serializers.Serializer):
         
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username', 'profile_picture', 'created_at', 'updated_at')
+
+
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

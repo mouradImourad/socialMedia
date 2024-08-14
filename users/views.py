@@ -1,7 +1,7 @@
 # user/views.py 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -162,6 +162,15 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
 class UserProfileView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserProfileSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+
+class UserUpdateView(generics.UpdateAPIView):
+    serializer_class = UserUpdateSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user

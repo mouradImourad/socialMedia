@@ -246,10 +246,26 @@ class ConfirmReactivationView(generics.GenericAPIView):
     serializer_class = ConfirmReactivationSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
-        return Response({'detail': 'Account successfully reactivated'}, status=status.HTTP_200_OK)
+        uidb64 = serializer.validated_data['uidb64']
+        token = serializer.validated_data['token']
+
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+
+            if PasswordResetTokenGenerator().check_token(user, token):
+                user.is_active = True
+                user.save()
+                return Response({"detail": "Account reactivated successfully"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "The reactivation link is invalid or has expired."}, status=status.HTTP_400_BAD_REQUEST)
+
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"error": "The reactivation link is invalid or has expired."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

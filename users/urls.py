@@ -13,8 +13,8 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('profile/update/', UserUpdateView.as_view(), name='profile-update'),
     path('password/change/', ChangePasswordView.as_view(), name='password-change'),
-    path('account/deactivate/', DeactivateAccountView.as_view(), name='account-deactivate'),
-    path('reactivate-account/', ReactivateAccountView.as_view(), name='reactivate-account'),
+    path('account-deactivate/', DeactivateAccountView.as_view(), name='account-deactivate'),
+    path('account-reactivate/', ReactivateAccountView.as_view(), name='reactivate-account'),
     path('confirm-reactivation/', ConfirmReactivationView.as_view(), name='confirm-reactivation'),
 
 ]

@@ -177,19 +177,9 @@ class ChangePasswordSerializer(serializers.Serializer):
     
 
 
+
 class DeactivateAccountSerializer(serializers.Serializer):
-    confirmation = serializers.BooleanField(required=True)
-
-    def validate_confirmation(self, value):
-        if not value:
-            raise serializers.ValidationError("You must confirm deactivation.")
-        return value
-
-    def save(self, **kwargs):
-        user = self.context['request'].user
-        user.is_active = False
-        user.save()
-        return user
+    pass
 
 
 
@@ -210,25 +200,11 @@ class ReactivateAccountSerializer(serializers.Serializer):
 
 
 class ConfirmReactivationSerializer(serializers.Serializer):
-    token = serializers.CharField(max_length=555)
-    uidb64 = serializers.CharField(max_length=100)
+    uidb64 = serializers.CharField()
+    token = serializers.CharField()
 
-    def validate(self, attrs):
-        try:
-            token = attrs.get('token')
-            uidb64 = attrs.get('uidb64')
-            uid = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
-
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                raise AuthenticationFailed('Invalid or expired token', 401)
-
-            user.is_active = True
-            user.save()
-
-            return user
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist, DjangoUnicodeDecodeError):
-            raise AuthenticationFailed('Invalid token', 401)
+    class Meta:
+        fields = ['uidb64', 'token']
 
 
 class UserSerializer(serializers.ModelSerializer):

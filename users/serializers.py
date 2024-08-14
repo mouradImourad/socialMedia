@@ -6,6 +6,8 @@ from django.urls import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 import jwt
+from rest_framework_simplejwt.exceptions import TokenError 
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,26 +41,20 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    token = serializers.CharField(read_only=True)
 
     def validate(self, data):
-        email = data.get('email', None)
-        password = data.get('password', None)
+        email = data.get('email')
+        password = data.get('password')
         user = authenticate(email=email, password=password)
-
-        if user is None:
-            raise serializers.ValidationError('Invalid login credentials')
-        
-        if not user.is_verified:
-            raise serializers.ValidationError('Email is not verified')
-
-        token = RefreshToken.for_user(user)
-        return {
-            'email': user.email,
-            'token': str(token.access_token),
-        }
+        if user and user.is_verified:
+            refresh = RefreshToken.for_user(user)
+            return {
+                'email': user.email,
+                'access': str(refresh.access_token),
+                'refresh': str(refresh)
+            }
+        raise serializers.ValidationError('Invalid credentials or unverified account')
     
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

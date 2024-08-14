@@ -3,11 +3,16 @@ from rest_framework.response import Response
 from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+from rest_framework import permissions, status
+from rest_framework.views import APIView
 from django.urls import reverse
 from django.core.mail import send_mail
 import jwt
 from .models import User
 from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterView(generics.GenericAPIView):
@@ -65,3 +70,25 @@ class LoginView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    
+
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        try:
+            refresh_token = request.data['refresh_token']
+            token = RefreshToken(refresh_token)
+            
+            # Get the corresponding outstanding token
+            outstanding_token = OutstandingToken.objects.get(token=token)
+
+            # Blacklist the token
+            BlacklistedToken.objects.create(token=outstanding_token)
+
+            return Response({"detail": "Logout successful"}, status=status.HTTP_200_OK)
+        except TokenError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except OutstandingToken.DoesNotExist:
+            return Response({"detail": "Token not found"}, status=status.HTTP_400_BAD_REQUEST)

@@ -50,3 +50,14 @@ class PostUpdateView(generics.UpdateAPIView):
         if post.user != self.request.user:
             raise PermissionDenied("You do not have permission to edit this post.")
         serializer.save()
+
+
+
+class PostDeleteView(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        if instance.user != self.request.user:
+            raise PermissionDenied("You do not have permission to delete this post.")
+        instance.delete()

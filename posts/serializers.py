@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -23,3 +23,10 @@ class PostSerializer(serializers.ModelSerializer):
     
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)  # Shows the username instead of user ID
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'post', 'user', 'content', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at', 'post']

@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-from .models import Post
-from .serializers import PostSerializer
+from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -82,3 +82,16 @@ class PostLikeUnlikeView(generics.UpdateAPIView):
             message = 'Post liked'
 
         return Response({'message': message}, status=status.HTTP_200_OK)
+    
+
+
+
+class CommentCreateView(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs.get('post_id')
+        post = Post.objects.get(id=post_id)
+        serializer.save(user=self.request.user, post=post)

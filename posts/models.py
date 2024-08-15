@@ -13,8 +13,12 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     anonymous = models.BooleanField(default=False)
     shared_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
 
     def __str__(self):
         if self.anonymous:
             return f'Anonymous - {self.content[:20]}'
         return f'{self.user.username} - {self.content[:20]}'
+    
+
+

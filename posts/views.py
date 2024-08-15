@@ -4,7 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .models import Post
 from .serializers import PostSerializer
-
+from rest_framework.response import Response
+from rest_framework import status
 
 # Create your views here.
 
@@ -61,3 +62,23 @@ class PostDeleteView(generics.DestroyAPIView):
         if instance.user != self.request.user:
             raise PermissionDenied("You do not have permission to delete this post.")
         instance.delete()
+
+
+
+class PostLikeUnlikeView(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        post = self.get_object()
+        user = request.user
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+            message = 'Post unliked'
+        else:
+            post.likes.add(user)
+            message = 'Post liked'
+
+        return Response({'message': message}, status=status.HTTP_200_OK)

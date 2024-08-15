@@ -15,3 +15,9 @@ class CreatePostView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user if not serializer.validated_data.get('anonymous', False) else None)
+
+
+
+class PostListView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer

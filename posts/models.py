@@ -3,6 +3,7 @@ from django.conf import settings
 
 # Create your models here.
 
+
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField(blank=True, null=True)

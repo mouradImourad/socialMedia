@@ -109,5 +109,30 @@ class PostCommentsListView(generics.ListAPIView):
     
 
 
+class SharePostView(generics.CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        original_post_id = self.kwargs['pk']
+        original_post = Post.objects.get(pk=original_post_id)
+
+        # Create a new post that shares the content of the original post
+        shared_post = Post.objects.create(
+            user=request.user,
+            content=original_post.content,
+            image=original_post.image,
+            video=original_post.video,
+            anonymous=False,  # Shared posts typically aren't anonymous
+            shared_from=original_post
+        )
+        shared_post.tags.set(original_post.tags.all())  # Optionally, carry over the tags
+
+        serializer = self.get_serializer(shared_post)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+
+
 
 #  notification view later 

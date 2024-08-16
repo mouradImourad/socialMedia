@@ -15,6 +15,7 @@ class Post(models.Model):
     shared_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
     tags = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tagged_posts', blank=True)
+    shared_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='shared_posts')
 
     def __str__(self):
         if self.anonymous:

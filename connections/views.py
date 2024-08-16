@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import FriendRequest, Friendship
-from .serializers import FriendRequestSerializer, FriendshipSerializer
+from .serializers import FriendRequestSerializer, FriendshipSerializer, MutualFriendSerializer
 from rest_framework.response import Response
 
 # Create your views here.
@@ -67,3 +67,22 @@ class UnfriendView(generics.DestroyAPIView):
             return Response({"detail": "Not authorized to unfriend this user."}, status=status.HTTP_403_FORBIDDEN)
         friendship.delete()
         return Response({"detail": "Friendship removed."}, status=status.HTTP_204_NO_CONTENT)
+
+User = get_user_model()
+
+class MutualFriendsView(generics.ListAPIView):
+    serializer_class = MutualFriendSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        logged_in_user = self.request.user
+        user_id = self.kwargs['user_id']
+        other_user = User.objects.get(id=user_id)
+
+        # Get the friend lists
+        logged_in_user_friends = set(Friendship.objects.filter(user=logged_in_user).values_list('friend', flat=True))
+        other_user_friends = set(Friendship.objects.filter(user=other_user).values_list('friend', flat=True))
+
+        # Find mutual friends
+        mutual_friend_ids = logged_in_user_friends.intersection(other_user_friends)
+        return User.objects.filter(id__in=mutual_friend_ids)

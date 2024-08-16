@@ -1,6 +1,6 @@
 # user/serializers.py 
 from rest_framework import serializers
-from .models import User
+from .models import User, ProfileVisit
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
@@ -225,3 +225,10 @@ class EmailVerificationSerializer(serializers.Serializer):
 
 
 
+class ProfileVisitSerializer(serializers.ModelSerializer):
+    visitor = serializers.StringRelatedField(read_only=True)
+    profile_owner = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = ProfileVisit
+        fields = ['visitor', 'profile_owner', 'visited_at']

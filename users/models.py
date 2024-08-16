@@ -49,3 +49,14 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+    
+
+
+
+class ProfileVisit(models.Model):
+    visitor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='visits_made')
+    profile_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='visits_received')
+    visited_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.visitor.username} visited {self.profile_owner.username} on {self.visited_at}'

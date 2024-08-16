@@ -1,7 +1,7 @@
 # user/views.py 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer, ChangePasswordSerializer, DeactivateAccountSerializer, ConfirmReactivationSerializer, ReactivateAccountSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, UserProfileSerializer, UserUpdateSerializer, ChangePasswordSerializer, DeactivateAccountSerializer, ConfirmReactivationSerializer, ReactivateAccountSerializer, ProfileVisitSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from django.urls import reverse
 from django.core.mail import send_mail
 import jwt
-from .models import User
+from .models import User, ProfileVisit
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from django.utils.encoding import force_str, smart_bytes, DjangoUnicodeDecodeError
@@ -280,3 +280,18 @@ class DeleteAccountView(generics.DestroyAPIView):
 
 
 
+class TrackProfileVisitView(generics.CreateAPIView):
+    serializer_class = ProfileVisitSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        profile_owner_id = self.kwargs['user_id']
+        profile_owner = User.objects.get(id=profile_owner_id)
+        
+        # Check if the visitor is not visiting their own profile
+        if request.user == profile_owner:
+            return Response({"detail": "You cannot visit your own profile."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        visit = ProfileVisit.objects.create(visitor=request.user, profile_owner=profile_owner)
+        serializer = self.get_serializer(visit)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

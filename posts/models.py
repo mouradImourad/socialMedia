@@ -3,7 +3,6 @@ from django.conf import settings
 
 # Create your models here.
 
-
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField(blank=True, null=True)
@@ -22,7 +21,26 @@ class Post(models.Model):
             return f'Anonymous - {self.content[:20]}'
         return f'{self.user.username} - {self.content[:20]}'
     
+REACTION_CHOICES = (
+    ('like', 'Like'),
+    ('love', 'Love'),
+    ('haha', 'Haha'),
+    ('wow', 'Wow'),
+    ('sad', 'Sad'),
+    ('angry', 'Angry'),
+)
 
+class Reaction(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='reactions', on_delete=models.CASCADE)
+    reaction_type = models.CharField(max_length=10, choices=REACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post', 'reaction_type')  
+
+    def __str__(self):
+        return f'{self.user.username} reacted {self.reaction_type} to {self.post.id}'
 
 
 class Comment(models.Model):

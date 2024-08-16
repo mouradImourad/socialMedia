@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .models import Post, Comment, Reaction
+from .serializers import PostSerializer, CommentSerializer, ReactionSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -133,6 +133,56 @@ class SharePostView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
+
+
+class AddReactionView(generics.CreateAPIView):
+    serializer_class = ReactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        post_id = self.kwargs['pk']
+        reaction_type = request.data.get('reaction_type')
+
+        # Check if the user has already reacted with this type to the post
+        existing_reaction = Reaction.objects.filter(
+            user=request.user,
+            post_id=post_id,
+            reaction_type=reaction_type
+        ).first()
+
+        if existing_reaction:
+            return Response({'detail': 'You have already reacted with this type to this post.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new reaction
+        reaction = Reaction.objects.create(
+            user=request.user,
+            post_id=post_id,
+            reaction_type=reaction_type
+        )
+        serializer = self.get_serializer(reaction)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class RemoveReactionView(generics.DestroyAPIView):
+    serializer_class = ReactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        post_id = self.kwargs['pk']
+        reaction_type = request.data.get('reaction_type')
+
+        # Find and delete the reaction
+        reaction = Reaction.objects.filter(
+            user=request.user,
+            post_id=post_id,
+            reaction_type=reaction_type
+        ).first()
+
+        if reaction:
+            reaction.delete()
+            return Response({'detail': 'Reaction removed.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'No such reaction found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 #  notification view later 

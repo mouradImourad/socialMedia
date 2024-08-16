@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Post, Comment, Reaction
-from .serializers import PostSerializer, CommentSerializer, ReactionSerializer
+from .models import Post, Comment, Reaction, Bookmark
+from .serializers import PostSerializer, CommentSerializer, ReactionSerializer, BookmarkSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -192,4 +192,30 @@ class RemoveReactionView(generics.DestroyAPIView):
             return Response({'detail': 'No such reaction found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
+
+
+class BookmarkPostView(generics.GenericAPIView):
+    serializer_class = BookmarkSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        post_id = self.kwargs['post_id']
+        post = Post.objects.get(id=post_id)
+        bookmark, created = Bookmark.objects.get_or_create(user=request.user, post=post)
+
+        if created:
+            return Response({'message': 'Post bookmarked.'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'Post is already bookmarked.'}, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        post_id = self.kwargs['post_id']
+        post = Post.objects.get(id=post_id)
+        bookmark = Bookmark.objects.filter(user=request.user, post=post).first()
+
+        if bookmark:
+            bookmark.delete()
+            return Response({'message': 'Bookmark removed.'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'message': 'Bookmark does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
 #  notification view later 

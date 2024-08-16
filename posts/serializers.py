@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment, Reaction
+from .models import Post, Comment, Reaction, Bookmark
 from django.contrib.auth import get_user_model
 
 
@@ -54,5 +54,16 @@ class ReactionSerializer(serializers.ModelSerializer):
         model = Reaction
         fields = ['id', 'user', 'post', 'reaction_type', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
+
+
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
+
+    class Meta:
+        model = Bookmark
+        fields = ['id', 'user', 'post', 'bookmarked_at']
 
 #  notification serializer later 

@@ -12,3 +12,11 @@ class FriendRequest(models.Model):
 
     def __str__(self):
         return f"{self.from_user} -> {self.to_user} ({self.status})"
+
+class Friendship(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='friends', on_delete=models.CASCADE)
+    friend = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='friends_with', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} is friends with {self.friend.username}"

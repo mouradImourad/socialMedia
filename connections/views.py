@@ -55,3 +55,15 @@ class ListFriendsView(generics.ListAPIView):
         user_id = self.kwargs['user_id']
         return Friendship.objects.filter(user_id=user_id)
 
+
+
+class UnfriendView(generics.DestroyAPIView):
+    queryset = Friendship.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        friendship = self.get_object()
+        if friendship.user != request.user:
+            return Response({"detail": "Not authorized to unfriend this user."}, status=status.HTTP_403_FORBIDDEN)
+        friendship.delete()
+        return Response({"detail": "Friendship removed."}, status=status.HTTP_204_NO_CONTENT)

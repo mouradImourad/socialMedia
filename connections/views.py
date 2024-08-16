@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import FriendRequest, Friendship
-from .serializers import FriendRequestSerializer
+from .serializers import FriendRequestSerializer, FriendshipSerializer
 from rest_framework.response import Response
 
 # Create your views here.
@@ -44,4 +44,14 @@ class AcceptRejectFriendRequestView(generics.UpdateAPIView):
         friend_request.status = status_choice
         friend_request.save()
         return Response(FriendRequestSerializer(friend_request).data)
+
+
+
+class ListFriendsView(generics.ListAPIView):
+    serializer_class = FriendshipSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        return Friendship.objects.filter(user_id=user_id)
 

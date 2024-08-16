@@ -106,3 +106,8 @@ class PostCommentsListView(generics.ListAPIView):
     def get_queryset(self):
         post_id = self.kwargs['post_id']
         return Comment.objects.filter(post_id=post_id).order_by('created_at')
+    
+
+
+
+#  notification view later 

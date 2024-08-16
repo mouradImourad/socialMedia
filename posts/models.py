@@ -14,6 +14,7 @@ class Post(models.Model):
     anonymous = models.BooleanField(default=False)
     shared_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
+    tags = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tagged_posts', blank=True)
 
     def __str__(self):
         if self.anonymous:
@@ -31,3 +32,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.content[:20]}'
+    
+
+
+# add notification model later 
+
+

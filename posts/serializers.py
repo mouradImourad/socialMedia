@@ -1,13 +1,24 @@
 from rest_framework import serializers
-from .models import Post, Comment, Reaction, Bookmark
+from .models import Post, Comment, Reaction, Bookmark, Hashtag
 from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
 
+
+
+
+class HashtagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hashtag
+        fields = ['id', 'name', 'created_at']
+
+
+
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    hashtags = serializers.SlugRelatedField(slug_field='name', queryset=Hashtag.objects.all(), many=True, required=False)
     likes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     shared_from_content = serializers.ReadOnlyField(source='shared_from.content')
@@ -15,7 +26,7 @@ class PostSerializer(serializers.ModelSerializer):
     shares_count = serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['id', 'user', 'content', 'image', 'video', 'created_at', 'updated_at', 'likes_count', 'comments_count', 'anonymous', 'shared_from', 'shared_from_content', 'tags', 'shares_count', 'views']
+        fields = ['id', 'user', 'content', 'image', 'video', 'created_at', 'updated_at', 'likes_count', 'comments_count', 'anonymous', 'shared_from', 'shared_from_content', 'tags', 'shares_count', 'views', 'hashtags']
 
     def get_likes_count(self, obj):         
         return obj.likes.count()

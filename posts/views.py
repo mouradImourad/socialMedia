@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Post, Comment, Reaction, Bookmark
-from .serializers import PostSerializer, CommentSerializer, ReactionSerializer, BookmarkSerializer
+from .models import Post, Comment, Reaction, Bookmark, Hashtag
+from .serializers import PostSerializer, CommentSerializer, ReactionSerializer, BookmarkSerializer, HashtagSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -218,4 +218,28 @@ class BookmarkPostView(generics.GenericAPIView):
             return Response({'message': 'Bookmark removed.'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'message': 'Bookmark does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class HashtagListView(generics.ListCreateAPIView):
+    queryset = Hashtag.objects.all()
+    serializer_class = HashtagSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class HashtagDetailView(generics.RetrieveAPIView):
+    queryset = Hashtag.objects.all()
+    serializer_class = HashtagSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class HashtagPostsListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        hashtag_name = self.kwargs['name']
+        hashtag = Hashtag.objects.get(name=hashtag_name)
+        return hashtag.posts.all()
+
+
+
 #  notification view later 

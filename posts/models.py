@@ -3,6 +3,15 @@ from django.conf import settings
 
 # Create your models here.
 
+
+class Hashtag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField(blank=True, null=True)
@@ -16,6 +25,7 @@ class Post(models.Model):
     tags = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tagged_posts', blank=True)
     shared_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='shared_posts')
     views = models.PositiveIntegerField(default=0)
+    hashtags = models.ManyToManyField(Hashtag, related_name='posts', blank=True)
 
     def __str__(self):
         if self.anonymous:

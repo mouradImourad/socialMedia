@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreatePostView, PostListView, PostDetailView, UserPostListView, PostUpdateView, PostDeleteView, PostLikeUnlikeView, CommentCreateView, PostCommentsListView, SharePostView, AddReactionView, RemoveReactionView, BookmarkPostView
+from .views import CreatePostView, PostListView, PostDetailView, UserPostListView, PostUpdateView, PostDeleteView, PostLikeUnlikeView, CommentCreateView, PostCommentsListView, SharePostView, AddReactionView, RemoveReactionView, BookmarkPostView, HashtagListView, HashtagPostsListView, HashtagDetailView
 
 urlpatterns = [
     path('create/', CreatePostView.as_view(), name='create-post'),
@@ -15,5 +15,8 @@ urlpatterns = [
     path('<int:pk>/react/', AddReactionView.as_view(), name='add-reaction'),
     path('<int:pk>/react/remove/', RemoveReactionView.as_view(), name='remove-reaction'),
     path('<int:post_id>/bookmark/', BookmarkPostView.as_view(), name='bookmark-post'),
+    path('hashtags/', HashtagListView.as_view(), name='hashtag-list'),
+    path('hashtags/<int:pk>/', HashtagDetailView.as_view(), name='hashtag-detail'),
+    path('hashtags/<str:name>/posts/', HashtagPostsListView.as_view(), name='hashtag-posts-list'),
 ]
 

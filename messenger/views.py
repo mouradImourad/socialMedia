@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from .models import Message
 from .serializers import MessageSerializer, ConversationSerializer
 from django.contrib.auth import get_user_model
@@ -37,3 +38,16 @@ class RetrieveConversationView(generics.RetrieveAPIView):
         context.update({"request": self.request})
         return context
 
+
+
+
+class DeleteMessageView(generics.DestroyAPIView):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        message = super().get_object()
+        if message.sender != self.request.user and message.recipient != self.request.user:
+            raise PermissionDenied("You do not have permission to delete this message.")
+        return message

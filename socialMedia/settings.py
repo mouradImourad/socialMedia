@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'users',
     'posts',
     'connections',
-    'messenger'
+    'messenger',
+    'search',
 ]
 
 MIDDLEWARE = [

@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/posts/', include('posts.urls')),
     path('api/connections/', include('connections.urls')),
     path('api/messages/', include('messenger.urls')),
+    path('api/search/', include('search.urls')),
 ]
 
 if settings.DEBUG:

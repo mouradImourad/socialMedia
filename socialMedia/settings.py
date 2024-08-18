@@ -12,10 +12,39 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
+
+
+sentry_sdk.init(
+    dsn="https://391e9493a7fd922c3b0abe75e32ac00d@o4507796909195264.ingest.us.sentry.io/4507796948254720",
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Quick-start development settings - unsuitable for production
@@ -46,6 +75,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle', 
+        'rest_framework.throttling.AnonRateThrottle',  
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '100/day', 
+        'anon': '10/hour', 
+    },
 }
 
 INSTALLED_APPS = [
@@ -63,16 +100,22 @@ INSTALLED_APPS = [
     'connections',
     'messenger',
     'search',
+    'debug_toolbar', 
 ]
-
+# The Django Debug Toolbar is useful during development to monitor SQL queries, cache usage, and request/response cycles.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 ROOT_URLCONF = 'socialMedia.urls'
@@ -180,3 +223,6 @@ CACHES = {
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = 600  # Cache duration in seconds (10 minutes)
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
+
+
+# make sure to write the exeption code later for all the cashed views 

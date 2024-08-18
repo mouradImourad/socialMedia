@@ -21,11 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),
-    path('api/posts/', include('posts.urls')),
-    path('api/connections/', include('connections.urls')),
-    path('api/messages/', include('messenger.urls')),
-    path('api/search/', include('search.urls')),
+    path('api/v1/', include('api.v1.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Hebrew <LL@li.org>\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: posts/models.py:8
+msgid "name"
+msgstr "שם"
+
+#: posts/models.py:9 posts/models.py:20 posts/models.py:47 posts/models.py:62
+msgid "created at"
+msgstr "נוצר בתאריך"
+
+#: posts/models.py:17 posts/models.py:61
+msgid "content"
+msgstr "תוכן"
+
+#: posts/models.py:18
+msgid "image"
+msgstr "תמונה"
+
+#: posts/models.py:19
+msgid "video"
+msgstr "וידאו"
+
+#: posts/models.py:21
+msgid "updated at"
+msgstr "עודכן בתאריך"
+
+#: posts/models.py:22
+msgid "anonymous"
+msgstr "אנונימי"
+
+#: posts/models.py:23
+msgid "shared from"
+msgstr "נשתף מ"
+
+#: posts/models.py:24
+msgid "likes"
+msgstr "אהבתי"
+
+#: posts/models.py:25
+msgid "tags"
+msgstr "תגיות"
+
+#: posts/models.py:26
+msgid "views"
+msgstr "צפיות"
+
+#: posts/models.py:27
+msgid "hashtags"
+msgstr "האשטגים"
+
+#: posts/models.py:35
+msgid "Like"
+msgstr "לייק"
+
+#: posts/models.py:36
+msgid "Love"
+msgstr "אהבה"
+
+#: posts/models.py:37
+msgid "Haha"
+msgstr "חה"
+
+#: posts/models.py:38
+msgid "Wow"
+msgstr "וואו"
+
+#: posts/models.py:39
+msgid "Sad"
+msgstr "עצוב"
+
+#: posts/models.py:40
+msgid "Angry"
+msgstr "כועס"
+
+#: posts/models.py:46
+msgid "reaction type"
+msgstr "סוג תגובה"
+
+#: posts/models.py:51
+msgid "reaction"
+msgstr "תגובה"
+
+#: posts/models.py:52
+msgid "reactions"
+msgstr "תגובות"
+
+#: posts/models.py:75
+msgid "bookmarked at"
+msgstr "נשמר בתאריך"
+
+#: posts/models.py:79
+msgid "bookmark"
+msgstr "סימנייה"
+
+#: posts/models.py:80
+msgid "bookmarks"
+msgstr "סימניות"

@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese (Simplified) <LL@li.org>\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "from user"
+msgstr "来自用户"
+
+msgid "to user"
+msgstr "发送给用户"
+
+msgid "created at"
+msgstr "创建于"
+
+msgid "status"
+msgstr "状态"
+
+msgid "Pending"
+msgstr "待定"
+
+msgid "Accepted"
+msgstr "已接受"
+
+msgid "Rejected"
+msgstr "已拒绝"
+
+msgid "friend request"
+msgstr "好友请求"
+
+msgid "friend requests"
+msgstr "好友请求"
+
+msgid "user"
+msgstr "用户"
+
+msgid "friend"
+msgstr "好友"
+
+msgid "friendship"
+msgstr "友谊"
+
+msgid "friendships"
+msgstr "友谊"

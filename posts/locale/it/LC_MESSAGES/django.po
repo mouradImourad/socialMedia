@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "name"
+msgstr "nome"
+
+msgid "created at"
+msgstr "creato il"
+
+msgid "content"
+msgstr "contenuto"
+
+msgid "image"
+msgstr "immagine"
+
+msgid "video"
+msgstr "video"
+
+msgid "updated at"
+msgstr "aggiornato il"
+
+msgid "anonymous"
+msgstr "anonimo"
+
+msgid "shared from"
+msgstr "condiviso da"
+
+msgid "likes"
+msgstr "mi piace"
+
+msgid "tags"
+msgstr "tag"
+
+msgid "views"
+msgstr "visualizzazioni"
+
+msgid "hashtags"
+msgstr "hashtag"
+
+msgid "Like"
+msgstr "Mi piace"
+
+msgid "Love"
+msgstr "Amore"
+
+msgid "Haha"
+msgstr "Haha"
+
+msgid "Wow"
+msgstr "Wow"
+
+msgid "Sad"
+msgstr "Triste"
+
+msgid "Angry"
+msgstr "Arrabbiato"
+
+msgid "reaction type"
+msgstr "tipo di reazione"
+
+msgid "reaction"
+msgstr "reazione"
+
+msgid "reactions"
+msgstr "reazioni"
+
+msgid "bookmarked at"
+msgstr "segnalibro il"
+
+msgid "bookmark"
+msgstr "segnalibro"
+
+msgid "bookmarks"
+msgstr "segnalibri"

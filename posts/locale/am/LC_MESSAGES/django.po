@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:26+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: posts/models.py:8
+msgid "name"
+msgstr ""
+
+#: posts/models.py:9 posts/models.py:20 posts/models.py:47 posts/models.py:62
+msgid "created at"
+msgstr ""
+
+#: posts/models.py:17 posts/models.py:61
+msgid "content"
+msgstr ""
+
+#: posts/models.py:18
+msgid "image"
+msgstr ""
+
+#: posts/models.py:19
+msgid "video"
+msgstr ""
+
+#: posts/models.py:21
+msgid "updated at"
+msgstr ""
+
+#: posts/models.py:22
+msgid "anonymous"
+msgstr ""
+
+#: posts/models.py:23
+msgid "shared from"
+msgstr ""
+
+#: posts/models.py:24
+msgid "likes"
+msgstr ""
+
+#: posts/models.py:25
+msgid "tags"
+msgstr ""
+
+#: posts/models.py:26
+msgid "views"
+msgstr ""
+
+#: posts/models.py:27
+msgid "hashtags"
+msgstr ""
+
+#: posts/models.py:35
+msgid "Like"
+msgstr ""
+
+#: posts/models.py:36
+msgid "Love"
+msgstr ""
+
+#: posts/models.py:37
+msgid "Haha"
+msgstr ""
+
+#: posts/models.py:38
+msgid "Wow"
+msgstr ""
+
+#: posts/models.py:39
+msgid "Sad"
+msgstr ""
+
+#: posts/models.py:40
+msgid "Angry"
+msgstr ""
+
+#: posts/models.py:46
+msgid "reaction type"
+msgstr ""
+
+#: posts/models.py:51
+msgid "reaction"
+msgstr ""
+
+#: posts/models.py:52
+msgid "reactions"
+msgstr ""
+
+#: posts/models.py:75
+msgid "bookmarked at"
+msgstr ""
+
+#: posts/models.py:79
+msgid "bookmark"
+msgstr ""
+
+#: posts/models.py:80
+msgid "bookmarks"
+msgstr ""

@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+import os
 
 
 
@@ -26,6 +27,10 @@ sentry_sdk.init(
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 LOGGING = {
     'version': 1,
@@ -107,6 +112,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -182,7 +188,37 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
+
+
+LANGUAGES = [
+    ('en', 'English'),        # English
+    ('es', 'Spanish'),        # Spanish
+    ('fr', 'French'),         # French
+    ('ar', 'Arabic'),         # Arabic
+    ('de', 'German'),         # German
+    ('zh-hans', 'Chinese'),   # Simplified Chinese
+    ('ru', 'Russian'),        # Russian
+    ('ja', 'Japanese'),       # Japanese
+    ('hi', 'Hindi'),          # Hindi (India)
+    ('pt', 'Portuguese'),     # Portuguese (Brazil, Portugal)
+    ('it', 'Italian'),        # Italian
+    ('tr', 'Turkish'),        # Turkish
+    ('he', 'Hebrew'),         # Hebrew
+    ('nl', 'Dutch'),          # Dutch (Netherlands, Belgium)
+    ('pl', 'Polish'),         # Polish
+    ('sv', 'Swedish'),        # Swedish
+    ('fi', 'Finnish'),        # Finnish
+    ('ko', 'Korean'),         # Korean
+    ('th', 'Thai'),           # Thai
+    ('id', 'Indonesian'),     # Indonesian
+    ('vi', 'Vietnamese'),     # Vietnamese
+    ('sw', 'Swahili'),        # Swahili (East Africa)
+    ('am', 'Amharic'),        # Amharic (Ethiopia)
+    ('yo', 'Yoruba'),         # Yoruba (West Africa)
+]
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,0 +1,46 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Yoruba <LL@li.org>\n"
+"Language: yo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: messenger/models.py:9
+msgid "sender"
+msgstr "olufiranṣẹ"
+
+#: messenger/models.py:10
+msgid "recipient"
+msgstr "olugba"
+
+#: messenger/models.py:11
+msgid "content"
+msgstr "akoonu"
+
+#: messenger/models.py:12
+msgid "timestamp"
+msgstr "akoko atẹjade"
+
+#: messenger/models.py:13
+msgid "is read"
+msgstr "ti ka"
+
+#: messenger/models.py:16
+msgid "message"
+msgstr "ifiranṣẹ"
+
+#: messenger/models.py:17
+msgid "messages"
+msgstr "awọn ifiranṣẹ"

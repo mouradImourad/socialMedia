@@ -9,7 +9,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+import bleach
+from rest_framework.pagination import PageNumberPagination
+
 # Create your views here.
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10  # Default number of items per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 class CreatePostView(generics.CreateAPIView):
@@ -18,13 +27,34 @@ class CreatePostView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user if not serializer.validated_data.get('anonymous', False) else None)
+        # Retrieve the content from the serializer's validated data
+        content = serializer.validated_data.get('content', '')
+
+        # Define allowed tags and attributes for sanitization
+        allowed_tags = ['b', 'i', 'u', 'a', 'p', 'strong', 'em', 'ul', 'li', 'ol', 'br']
+        allowed_attrs = {
+            'a': ['href', 'title'],
+        }
+
+        # Sanitize the content using bleach
+        sanitized_content = bleach.clean(
+            content,
+            tags=allowed_tags,
+            attributes=allowed_attrs
+        )
+
+        # Save the post with the sanitized content
+        serializer.save(
+            user=self.request.user if not serializer.validated_data.get('anonymous', False) else None,
+            content=sanitized_content
+        )
 
 
 @method_decorator(cache_page(60 * 15), name='dispatch')
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 @method_decorator(cache_page(60 * 15), name='dispatch')
@@ -43,6 +73,7 @@ class PostDetailView(generics.RetrieveAPIView):
 @method_decorator(cache_page(60 * 15), name='dispatch')
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         user_id = self.kwargs['user_id']
@@ -110,6 +141,7 @@ class CommentCreateView(generics.CreateAPIView):
 class PostCommentsListView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         post_id = self.kwargs['post_id']
@@ -235,6 +267,7 @@ class HashtagDetailView(generics.RetrieveAPIView):
 class HashtagPostsListView(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         hashtag_name = self.kwargs['name']

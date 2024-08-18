@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from django.db import models
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-
+import bleach
 
 
 # messages/views.py
@@ -24,7 +24,24 @@ class SendMessageView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        # Retrieve the content from the serializer's validated data
+        content = serializer.validated_data.get('content', '')
+
+        # Define allowed tags and attributes for sanitization
+        allowed_tags = ['b', 'i', 'u', 'a', 'p', 'strong', 'em']
+        allowed_attrs = {
+            'a': ['href', 'title'],
+        }
+
+        # Sanitize the content before saving the message
+        sanitized_content = bleach.clean(
+            content,
+            tags=allowed_tags,
+            attributes=allowed_attrs
+        )
+
+        # Save the message with the sanitized content
+        serializer.save(sender=self.request.user, content=sanitized_content)
 
 
 

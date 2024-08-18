@@ -18,6 +18,8 @@ from django.utils.encoding import force_str, smart_bytes, DjangoUnicodeDecodeErr
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_str, force_bytes, smart_str, smart_bytes, DjangoUnicodeDecodeError
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 
 
@@ -158,7 +160,7 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
     
 
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class UserProfileView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserProfileSerializer

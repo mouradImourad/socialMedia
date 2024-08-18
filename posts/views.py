@@ -7,7 +7,8 @@ from .models import Post, Comment, Reaction, Bookmark, Hashtag
 from .serializers import PostSerializer, CommentSerializer, ReactionSerializer, BookmarkSerializer, HashtagSerializer
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 
@@ -20,13 +21,13 @@ class CreatePostView(generics.CreateAPIView):
         serializer.save(user=self.request.user if not serializer.validated_data.get('anonymous', False) else None)
 
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class PostDetailView(generics.RetrieveAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -39,7 +40,7 @@ class PostDetailView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer
 

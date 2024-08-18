@@ -7,7 +7,8 @@ from django.contrib.auth import get_user_model
 from .models import FriendRequest, Friendship
 from .serializers import FriendRequestSerializer, FriendshipSerializer, MutualFriendSerializer
 from rest_framework.response import Response
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 # Create your views here.
 
 User = get_user_model()
@@ -47,6 +48,7 @@ class AcceptRejectFriendRequestView(generics.UpdateAPIView):
 
 
 
+@method_decorator(cache_page(60 * 10), name='dispatch')
 class ListFriendsView(generics.ListAPIView):
     serializer_class = FriendshipSerializer
     permission_classes = [IsAuthenticated]
@@ -70,6 +72,7 @@ class UnfriendView(generics.DestroyAPIView):
 
 User = get_user_model()
 
+@method_decorator(cache_page(60 * 10), name='dispatch')
 class MutualFriendsView(generics.ListAPIView):
     serializer_class = MutualFriendSerializer
     permission_classes = [IsAuthenticated]

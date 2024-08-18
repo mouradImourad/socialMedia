@@ -5,10 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSearchSerializer, PostSearchSerializer
 from posts.models import Post
 from django.db.models import Q
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 
 User = get_user_model()
 
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class UserSearchView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSearchSerializer
@@ -22,7 +26,7 @@ class UserSearchView(generics.ListAPIView):
         return queryset
 
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class PostSearchView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSearchSerializer
@@ -34,6 +38,6 @@ class PostSearchView(generics.ListAPIView):
         if query:
             queryset = queryset.filter(
                 Q(content__icontains=query) |
-                Q(hashtags__name__icontains=query)
+                Q(tags__name__icontains=query)
             ).distinct()
         return queryset

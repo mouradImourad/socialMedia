@@ -166,3 +166,17 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mm697533@gmail.com'
 EMAIL_HOST_PASSWORD = 'xkuo vdne sphf ypcq'
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 600  # Cache duration in seconds (10 minutes)
+CACHE_MIDDLEWARE_KEY_PREFIX = ''

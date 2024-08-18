@@ -8,7 +8,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.db import models
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
 
@@ -43,6 +44,7 @@ class MessagePagination(PageNumberPagination):
 
 User = get_user_model()
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class RetrieveConversationView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
@@ -74,7 +76,7 @@ class RetrieveConversationView(generics.RetrieveAPIView):
 
     
     
-
+# Conversation List View in v2 
 
 
 class DeleteMessageView(generics.DestroyAPIView):

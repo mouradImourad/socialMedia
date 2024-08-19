@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Japanese <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "name"
+msgstr "名前"
+
+msgid "created at"
+msgstr "作成日"
+
+msgid "content"
+msgstr "コンテンツ"
+
+msgid "image"
+msgstr "画像"
+
+msgid "video"
+msgstr "ビデオ"
+
+msgid "updated at"
+msgstr "更新日"
+
+msgid "anonymous"
+msgstr "匿名"
+
+msgid "shared from"
+msgstr "共有元"
+
+msgid "likes"
+msgstr "いいね"
+
+msgid "tags"
+msgstr "タグ"
+
+msgid "views"
+msgstr "ビュー"
+
+msgid "hashtags"
+msgstr "ハッシュタグ"
+
+msgid "Like"
+msgstr "いいね"
+
+msgid "Love"
+msgstr "ラブ"
+
+msgid "Haha"
+msgstr "ハハ"
+
+msgid "Wow"
+msgstr "ワオ"
+
+msgid "Sad"
+msgstr "悲しい"
+
+msgid "Angry"
+msgstr "怒り"
+
+msgid "reaction type"
+msgstr "リアクションの種類"
+
+msgid "reaction"
+msgstr "リアクション"
+
+msgid "reactions"
+msgstr "リアクション"
+
+msgid "bookmarked at"
+msgstr "ブックマーク日時"
+
+msgid "bookmark"
+msgstr "ブックマーク"
+
+msgid "bookmarks"
+msgstr "ブックマーク"

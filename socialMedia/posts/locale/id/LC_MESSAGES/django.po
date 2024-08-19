@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Indonesian <LL@li.org>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "name"
+msgstr "nama"
+
+msgid "created at"
+msgstr "dibuat pada"
+
+msgid "content"
+msgstr "konten"
+
+msgid "image"
+msgstr "gambar"
+
+msgid "video"
+msgstr "video"
+
+msgid "updated at"
+msgstr "diperbarui pada"
+
+msgid "anonymous"
+msgstr "anonim"
+
+msgid "shared from"
+msgstr "dibagikan dari"
+
+msgid "likes"
+msgstr "suka"
+
+msgid "tags"
+msgstr "tag"
+
+msgid "views"
+msgstr "tampilan"
+
+msgid "hashtags"
+msgstr "tagar"
+
+msgid "Like"
+msgstr "Suka"
+
+msgid "Love"
+msgstr "Cinta"
+
+msgid "Haha"
+msgstr "Haha"
+
+msgid "Wow"
+msgstr "Wow"
+
+msgid "Sad"
+msgstr "Sedih"
+
+msgid "Angry"
+msgstr "Marah"
+
+msgid "reaction type"
+msgstr "jenis reaksi"
+
+msgid "reaction"
+msgstr "reaksi"
+
+msgid "reactions"
+msgstr "reaksi"
+
+msgid "bookmarked at"
+msgstr "ditandai pada"
+
+msgid "bookmark"
+msgstr "penanda"
+
+msgid "bookmarks"
+msgstr "penanda"

@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: users/models.py:12
+msgid "Users must have an email address"
+msgstr "Gebruikers moeten een e-mailadres hebben"
+
+#: users/models.py:31
+msgid "username"
+msgstr "gebruikersnaam"
+
+#: users/models.py:32
+msgid "verified"
+msgstr "geverifieerd"
+
+#: users/models.py:33
+msgid "active"
+msgstr "actief"
+
+#: users/models.py:34
+msgid "profile picture"
+msgstr "profielfoto"
+
+#: users/models.py:35
+msgid "created at"
+msgstr "aangemaakt op"
+
+#: users/models.py:36
+msgid "updated at"
+msgstr "bijgewerkt op"
+
+#: users/models.py:37
+msgid "staff status"
+msgstr "personeelsstatus"
+
+#: users/models.py:38
+msgid "superuser status"
+msgstr "superuser status"
+
+#: users/models.py:62
+msgid "visited at"
+msgstr "bezocht op"

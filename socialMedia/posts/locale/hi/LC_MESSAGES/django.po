@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Hindi <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "name"
+msgstr "नाम"
+
+msgid "created at"
+msgstr "पर बनाया गया"
+
+msgid "content"
+msgstr "सामग्री"
+
+msgid "image"
+msgstr "छवि"
+
+msgid "video"
+msgstr "वीडियो"
+
+msgid "updated at"
+msgstr "पर अपडेट किया गया"
+
+msgid "anonymous"
+msgstr "गुमनाम"
+
+msgid "shared from"
+msgstr "से साझा किया गया"
+
+msgid "likes"
+msgstr "पसंद"
+
+msgid "tags"
+msgstr "टैग"
+
+msgid "views"
+msgstr "दृश्य"
+
+msgid "hashtags"
+msgstr "हैशटैग"
+
+msgid "Like"
+msgstr "पसंद"
+
+msgid "Love"
+msgstr "प्रेम"
+
+msgid "Haha"
+msgstr "हाहा"
+
+msgid "Wow"
+msgstr "वाह"
+
+msgid "Sad"
+msgstr "उदास"
+
+msgid "Angry"
+msgstr "गुस्से में"
+
+msgid "reaction type"
+msgstr "प्रतिक्रिया प्रकार"
+
+msgid "reaction"
+msgstr "प्रतिक्रिया"
+
+msgid "reactions"
+msgstr "प्रतिक्रियाएँ"
+
+msgid "bookmarked at"
+msgstr "पर बुकमार्क किया गया"
+
+msgid "bookmark"
+msgstr "बुकमार्क"
+
+msgid "bookmarks"
+msgstr "बुकमार्क"

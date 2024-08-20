@@ -25,6 +25,8 @@ const LoginPage = () => {
             localStorage.setItem('accessToken', access);
             localStorage.setItem('refreshToken', refresh);
             alert('Login successful!');
+            setEmail('');
+            setPassword('');
             navigate('/home'); // Redirect to the home page
         }
     } catch (error) {

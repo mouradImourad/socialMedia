@@ -21,7 +21,10 @@ const SignUpPage = () => {
             profile_picture: null, 
         });
         if (response.status === 201) {
-            alert('Account created! Please check your email for verification.');
+          alert('Account created! Please check your email for verification.');
+          setEmail('');
+            setUsername('');
+            setPassword('');
         }
     } catch (error) {
         console.error('Error registering user:', error.response ? error.response.data : error.message);

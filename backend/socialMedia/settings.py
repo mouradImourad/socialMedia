@@ -105,7 +105,8 @@ INSTALLED_APPS = [
     'connections',
     'messenger',
     'search',
-    'debug_toolbar', 
+    'debug_toolbar',
+    'corsheaders', 
 ]
 # The Django Debug Toolbar is useful during development to monitor SQL queries, cache usage, and request/response cycles.
 MIDDLEWARE = [
@@ -113,12 +114,20 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# settings.py
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
 
 INTERNAL_IPS = [
     "127.0.0.1",

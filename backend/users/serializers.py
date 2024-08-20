@@ -46,6 +46,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
     
+    
 
 
 class LoginSerializer(serializers.Serializer):

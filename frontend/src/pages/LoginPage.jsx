@@ -1,12 +1,13 @@
 // src/pages/LoginPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';  
 import axios from 'axios';
 import './LoginPage.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -14,7 +15,7 @@ const LoginPage = () => {
     console.log('Attempting to log in with:', { email, password });
     
     try {
-        const response = await axios.post('http://localhost:8000/api/v1/token/', {
+        const response = await axios.post('http://localhost:8000/api/v1/users/login/', {
             email,
             password,
         });

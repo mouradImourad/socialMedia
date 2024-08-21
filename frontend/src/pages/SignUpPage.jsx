@@ -27,8 +27,18 @@ const SignUpPage = () => {
             setPassword('');
         }
     } catch (error) {
+        if (error.response && error.response.data) {
+            const errorData = error.response.data;
+            if (errorData.email) {
+                alert(`Email error: ${errorData.email.join(', ')}`);
+            }
+            if (errorData.username) {
+                alert(`Username error: ${errorData.username.join(', ')}`);
+            }
+        } else {
+            alert('An unexpected error occurred. Please try again.');
+        }
         console.error('Error registering user:', error.response ? error.response.data : error.message);
-        alert('Error registering user.');
     }
 };
 

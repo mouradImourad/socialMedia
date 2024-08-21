@@ -33,9 +33,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             profile_picture=validated_data.get('profile_picture')
         )
         token = RefreshToken.for_user(user).access_token
-        current_site = 'localhost:8000'  # Change this to my frontend URL when i deploy it 
+        current_site = 'localhost:5173'  # Change this to my frontend URL when i deploy it 
         relative_link = reverse('email-verify')
-        absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
+        absurl = f'http://{current_site}{relative_link}?token={str(token)}'
+        print(f'reverse output: {relative_link}')
+        print(f'Generated absurl: {absurl}')
         email_body = f'Hi {user.username}, use the link below to verify your email \n{absurl}'
         send_mail(
             'Verify your email',

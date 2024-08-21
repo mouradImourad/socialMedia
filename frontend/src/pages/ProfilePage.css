@@ -45,18 +45,12 @@
 .settings-button {
     width: 100%;
     padding: 10px 20px;
-    /* Adjusted padding to match the logout button */
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 0;
-}
-
-.edit-profile-button+.settings-button {
-    margin-top: 5px;
-    /* Slight spacing between buttons */
+    margin-bottom: 10px;
 }
 
 .settings-button {
@@ -70,18 +64,65 @@
 
 .profile-details {
     flex-grow: 1;
-    margin-top: 0;
-    padding-top: 0;
     display: flex;
     flex-direction: column;
 }
 
+.new-post-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.file-input-group {
+    margin-bottom: 15px;
+}
+
+.file-input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
 .user-posts {
-    margin-top: 150px;
-    /* Adjust to align with the settings button */
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-top: 220px;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
+}
+.user-posts .post-container:first-child {
+    margin-top: 100px;
+    /* Adjust this to align with the settings button */
 }
 
 .post-container {
@@ -91,30 +132,59 @@
     border-radius: 5px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    min-height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    /* Ensures a consistent height for all posts */
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .post-container p {
     margin: 0;
+    text-align: center;
+    line-height: 1.5;
+    overflow: hidden;
 }
 
 .post-profile-picture {
     position: absolute;
-    top: -15px;
-    left: -15px;
+    top: -5px;
+    /* Adjust this value to control how much the picture overlaps */
+    left: -5px;
+    /* Adjust this value to control how much the picture overlaps */
     width: 50px;
+    /* Adjust the size of the profile picture */
     height: 50px;
+    /* Adjust the size of the profile picture */
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid white;
-    /* Optional: Add a white border for better contrast */
+    border: 3px solid white;
+    /* Add a white border for contrast */
 }
 
 .post-profile-picture img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.post-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    overflow: hidden;
+}
+
+.post-content img,
+.post-content video {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 5px;
+    margin-top: 10px; 
+    object-fit: cover;
+    /* Added to ensure the media fits within the container */
 }

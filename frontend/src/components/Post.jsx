@@ -1,8 +1,6 @@
 import React from 'react';
 
 const Post = ({ post, userProfilePicture }) => {
-    console.log("User Profile Picture:", userProfilePicture); // Debugging line
-
     return (
         <div className="post-container">
             <div className="post-profile-picture">

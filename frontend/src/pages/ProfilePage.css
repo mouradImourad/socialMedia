@@ -1,40 +1,27 @@
-/* src/pages/ProfilePage.css */
+/* ProfilePage.css */
 
-.edit-form {
-    margin-top: 20px;
-    text-align: left;
+.profile-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
 }
 
-.edit-form .form-group {
+.user-posts .post {
+    border: 1px solid #ddd;
+    padding: 15px;
     margin-bottom: 15px;
-}
-
-.edit-form label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.edit-form input[type="text"],
-.edit-form input[type="email"],
-.edit-form input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.edit-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+img,
+video {
+    max-width: 100%;
+    height: auto;
 }
 
-.edit-form button:hover {
-    background-color: #0056b3;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 10px;
+    }
 }

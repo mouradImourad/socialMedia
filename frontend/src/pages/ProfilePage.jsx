@@ -1,11 +1,13 @@
 // src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
+import Post from '../components/Post';  // Import the Post component
 import axios from 'axios';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
     const [userData, setUserData] = useState({});
+    const [userPosts, setUserPosts] = useState([]); // State for user posts
     const [editMode, setEditMode] = useState(false);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -23,11 +25,26 @@ const ProfilePage = () => {
             setUserData(response.data);
             setUsername(response.data.username);
             setEmail(response.data.email);
+            fetchUserPosts(response.data.id); // Fetch user posts after profile data is loaded
         })
         .catch(error => {
             console.error('Error fetching profile:', error.response ? error.response.data : error.message);
         });
     }, []);
+
+    const fetchUserPosts = (userId) => {
+        axios.get(`http://localhost:8000/api/v1/posts/user/${userId}/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
+        .then(response => {
+            setUserPosts(response.data.results); // Assuming API returns paginated results
+        })
+        .catch(error => {
+            console.error('Error fetching posts:', error.response ? error.response.data : error.message);
+        });
+    };
 
     const handleFileChange = (e) => {
         setProfilePicture(e.target.files[0]);
@@ -63,7 +80,7 @@ const ProfilePage = () => {
             <Navbar />
             <div className="profile-container">
                 <h1>{userData.username}'s Profile</h1>
-                <img src={userData.profile_picture} alt="Profile" />
+                <img src={`${userData.profile_picture}?${new Date().getTime()}`} alt="Profile" />
                 <p>{userData.email}</p>
                 <button onClick={() => setEditMode(!editMode)}>
                     {editMode ? 'Cancel' : 'Edit Profile'}
@@ -97,6 +114,18 @@ const ProfilePage = () => {
                     </div>
                 )}
                 {message && <p>{message}</p>}
+
+                {/* Display user posts */}
+                <div className="user-posts">
+                    <h2>Your Posts</h2>
+                    {userPosts.length > 0 ? (
+                        userPosts.map(post => (
+                            <Post key={post.id} post={post} />
+                        ))
+                    ) : (
+                        <p>No posts yet.</p>
+                    )}
+                </div>
             </div>
         </div>
     );

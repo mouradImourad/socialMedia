@@ -1,13 +1,14 @@
-// src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import Post from '../components/Post';  // Import the Post component
+import Post from '../components/Post';  
+import ChangePasswordForm from '../components/ChangePasswordForm';
+import AccountSettings from '../components/AccountSettings';
 import axios from 'axios';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
     const [userData, setUserData] = useState({});
-    const [userPosts, setUserPosts] = useState([]); // State for user posts
+    const [userPosts, setUserPosts] = useState([]); 
     const [editMode, setEditMode] = useState(false);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -15,7 +16,6 @@ const ProfilePage = () => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        // Fetch user profile data
         axios.get('http://localhost:8000/api/v1/users/profile/', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -25,7 +25,7 @@ const ProfilePage = () => {
             setUserData(response.data);
             setUsername(response.data.username);
             setEmail(response.data.email);
-            fetchUserPosts(response.data.id); // Fetch user posts after profile data is loaded
+            fetchUserPosts(response.data.id); 
         })
         .catch(error => {
             console.error('Error fetching profile:', error.response ? error.response.data : error.message);
@@ -115,7 +115,17 @@ const ProfilePage = () => {
                 )}
                 {message && <p>{message}</p>}
 
-                {/* Display user posts */}
+                
+                <div className="change-password-section">
+                    <h2>Change Password</h2>
+                    <ChangePasswordForm />
+                </div>
+                <div className="account-settings-section">
+                    <h2>Account Settings</h2>
+                    <AccountSettings />
+                </div>
+
+               
                 <div className="user-posts">
                     <h2>Your Posts</h2>
                     {userPosts.length > 0 ? (

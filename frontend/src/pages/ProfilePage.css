@@ -1,4 +1,4 @@
-/* ProfilePage.css */
+
 
 .profile-container {
     max-width: 800px;
@@ -19,9 +19,55 @@ video {
     height: auto;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .profile-container {
         padding: 10px;
     }
+}
+
+
+
+.change-password-section {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.change-password-section h2 {
+    margin-bottom: 15px;
+}
+
+.change-password-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.change-password-section .form-group {
+    margin-bottom: 15px;
+}
+
+.change-password-section .form-group label {
+    margin-bottom: 5px;
+}
+
+.change-password-section .form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.change-password-section button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.change-password-section button:hover {
+    background-color: #0056b3;
 }

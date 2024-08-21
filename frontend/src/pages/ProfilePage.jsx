@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Post from '../components/Post';  
-import ChangePasswordForm from '../components/ChangePasswordForm';
-import AccountSettings from '../components/AccountSettings';
 import axios from 'axios';
 import './ProfilePage.css';
 
@@ -25,6 +23,7 @@ const ProfilePage = () => {
             setUserData(response.data);
             setUsername(response.data.username);
             setEmail(response.data.email);
+            setProfilePicture(response.data.profile_picture); // Set profile picture
             fetchUserPosts(response.data.id); 
         })
         .catch(error => {
@@ -79,62 +78,60 @@ const ProfilePage = () => {
         <div>
             <Navbar />
             <div className="profile-container">
-                <h1>{userData.username}'s Profile</h1>
-                <img src={`${userData.profile_picture}?${new Date().getTime()}`} alt="Profile" />
-                <p>{userData.email}</p>
-                <button onClick={() => setEditMode(!editMode)}>
-                    {editMode ? 'Cancel' : 'Edit Profile'}
-                </button>
-                {editMode && (
-                    <div className="edit-form">
-                        <div className="form-group">
-                            <label>Username</label>
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Profile Picture</label>
-                            <input
-                                type="file"
-                                onChange={handleFileChange}
-                            />
-                        </div>
-                        <button onClick={handleSave}>Save Changes</button>
+                <div className="profile-sidebar">
+                    <div className="profile-picture-container">
+                        <img src={`${userData.profile_picture}?${new Date().getTime()}`} alt="Profile" />
+                        <h1>{userData.username}'s Profile</h1>
+                        <p>{userData.email}</p>
                     </div>
-                )}
-                {message && <p>{message}</p>}
-
-                
-                <div className="change-password-section">
-                    <h2>Change Password</h2>
-                    <ChangePasswordForm />
+                    <button className="edit-profile-button" onClick={() => setEditMode(!editMode)}>
+                        Edit Profile
+                    </button>
+                    <button className="settings-button">
+                        Settings
+                    </button>
                 </div>
-                <div className="account-settings-section">
-                    <h2>Account Settings</h2>
-                    <AccountSettings />
-                </div>
-
-               
-                <div className="user-posts">
-                    <h2>Your Posts</h2>
-                    {userPosts.length > 0 ? (
-                        userPosts.map(post => (
-                            <Post key={post.id} post={post} />
-                        ))
-                    ) : (
-                        <p>No posts yet.</p>
+                <div className="profile-details">
+                    {editMode && (
+                        <div className="edit-form">
+                            <div className="form-group">
+                                <label>Username</label>
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Profile Picture</label>
+                                <input
+                                    type="file"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            <button onClick={handleSave}>Save Changes</button>
+                        </div>
                     )}
+                    {message && <p>{message}</p>}
+
+                    <div className="user-posts">
+                        <h2>Your Posts</h2>
+                        {userPosts.length > 0 ? (
+                            userPosts.map(post => (
+                                <Post key={post.id} post={post} userProfilePicture={userData.profile_picture} />
+                            ))
+                        ) : (
+                            <p>No posts yet.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

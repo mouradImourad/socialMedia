@@ -1,107 +1,120 @@
-
-
 .profile-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: auto;
     padding: 20px;
+    display: flex;
+    align-items: flex-start;
 }
 
-.user-posts .post {
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 5px;
+.profile-sidebar {
+    flex-shrink: 0;
+    width: 200px;
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-img,
-video {
-    max-width: 100%;
-    height: auto;
-}
-
-
-@media (max-width: 768px) {
-    .profile-container {
-        padding: 10px;
-    }
-}
-
-
-
-.change-password-section {
-    margin-top: 30px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.change-password-section h2 {
+.profile-picture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 15px;
 }
 
-.change-password-section form {
+.profile-picture-container img {
+    border-radius: 50%;
+    height: 150px;
+    width: 150px;
+    margin-bottom: 10px;
+}
+
+.profile-picture-container h1 {
+    font-size: 16px;
+    margin: 5px 0;
+    font-weight: normal;
+}
+
+.profile-picture-container p {
+    font-size: 16px;
+    text-align: center;
+    margin: 5px 0;
+}
+
+.edit-profile-button,
+.settings-button {
+    width: 100%;
+    padding: 10px 20px;
+    /* Adjusted padding to match the logout button */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.edit-profile-button+.settings-button {
+    margin-top: 5px;
+    /* Slight spacing between buttons */
+}
+
+.settings-button {
+    background-color: #007bff;
+}
+
+.edit-profile-button:hover,
+.settings-button:hover {
+    opacity: 0.8;
+}
+
+.profile-details {
+    flex-grow: 1;
+    margin-top: 0;
+    padding-top: 0;
     display: flex;
     flex-direction: column;
 }
 
-.change-password-section .form-group {
-    margin-bottom: 15px;
+.user-posts {
+    margin-top: 150px;
+    /* Adjust to align with the settings button */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
-.change-password-section .form-group label {
-    margin-bottom: 5px;
-}
-
-.change-password-section .form-group input {
-    padding: 10px;
+.post-container {
+    position: relative;
     border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.change-password-section button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.change-password-section button:hover {
-    background-color: #0056b3;
-}
-
-.account-settings {
-    margin-top: 30px;
     padding: 20px;
-    border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.account-settings h3 {
-    margin-bottom: 15px;
+.post-container p {
+    margin: 0;
 }
 
-.account-settings button {
-    margin-right: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.post-profile-picture {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid white;
+    /* Optional: Add a white border for better contrast */
 }
 
-.account-settings button:hover {
-    background-color: #0056b3;
-}
-
-.delete-account-button {
-    background-color: #dc3545;
-}
-
-.delete-account-button:hover {
-    background-color: #c82333;
+.post-profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

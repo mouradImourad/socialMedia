@@ -5,8 +5,8 @@ import SignUpPage from './pages/SignUpPage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
-import HomePage from './pages/HomePage';
-
+// import HomePage from './pages/HomePage';
+import TempTestPage from './pages/TempTestPage';
 
 const AppRouter = () => {
     
@@ -15,6 +15,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/test" element={<TempTestPage />} />
         {/* <Route path="/home" element={<HomePage />} /> */}
         {/* <Route path="/" element={<HomePage />} /> */}
         <Route path="/profile" element={<ProfilePage />} />

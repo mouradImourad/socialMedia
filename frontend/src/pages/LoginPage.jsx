@@ -27,7 +27,7 @@ const LoginPage = () => {
             alert('Login successful!');
             setEmail('');
             setPassword('');
-            navigate('/home'); // Redirect to the home page
+            navigate('/test'); // Redirect to the home page
         }
     } catch (error) {
         console.error('Error logging in:', error.response ? error.response.data : error.message);

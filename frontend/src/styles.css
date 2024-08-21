@@ -1,0 +1,87 @@
+
+.feed-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.feed-img {
+    width: 2.5rem;
+    border-radius: 9999px;
+}
+
+.feed-post-img {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+}
+
+.feed-like {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.feed-like span {
+    margin-left: 0.5rem;
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.feed-comment-link {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.feed-private {
+    display: flex;
+    align-items: center;
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.feed-button {
+    cursor: pointer;
+}
+
+.feed-extra-modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.feed-extra-modal-delete {
+    display: flex;
+    align-items: center;
+    color: #ef4444;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.feed-extra-modal-report {
+    display: flex;
+    align-items: center;
+    color: #f97316;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.space-x-6>*:not(:last-child) {
+    margin-right: 1.5rem;
+   
+}
+
+.text-gray-600 {
+    color: #4b5563;
+}

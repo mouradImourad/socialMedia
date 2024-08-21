@@ -38,12 +38,33 @@ const AccountSettings = () => {
         }
     };
 
+
+    const handleDeleteAccount = async () => {
+    try {
+        const response = await axios.delete(
+            'http://localhost:8000/api/v1/users/delete-account/',
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        setMessage('Account deleted successfully!');
+        // Optionally redirect the user after account deletion
+    } catch (error) {
+        setMessage('Failed to delete account.');
+    }
+};
+
     return (
         <div className="account-settings">
             <h3>Account Settings</h3>
             {message && <p>{message}</p>}
             <button onClick={handleDeactivateAccount}>Deactivate Account</button>
             <button onClick={handleReactivateAccount}>Reactivate Account</button>
+            <button onClick={handleDeleteAccount} className="delete-account-button">
+    Delete Account
+</button>
         </div>
     );
 };

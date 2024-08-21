@@ -15,8 +15,8 @@ const AppRouter = () => {
       <Routes>
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/" element={<HomePage />} />
+        {/* <Route path="/home" element={<HomePage />} /> */}
+        {/* <Route path="/" element={<HomePage />} /> */}
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/:lang/api/v1/users/email-verify" element={<EmailVerificationPage />} />
       </Routes>

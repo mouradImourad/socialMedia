@@ -6,7 +6,7 @@
     background-color: #007bff;
     color: white;
     flex-wrap: nowrap;
-    /* Ensure that the items stay in one line */
+  
 }
 
 .navbar-left {
@@ -31,12 +31,12 @@
     color: white;
     text-decoration: none;
     font-weight: bold;
-    /* Make the links a bit more prominent */
+  
 }
 
 .navbar-center a:hover {
     color: #ddd;
-    /* Add a hover effect for the links */
+  
 }
 
 .navbar-right {
@@ -49,7 +49,7 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-right: 15px;
-    /* Add space between search input and logout button */
+
 }
 
 .logout-button {

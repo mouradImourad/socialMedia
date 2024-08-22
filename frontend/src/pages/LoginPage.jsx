@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';  
 import axios from 'axios';
@@ -20,14 +19,18 @@ const LoginPage = () => {
             password,
         });
         
-        if (response.status === 200) {
-            const { access, refresh } = response.data;
+      if (response.status === 200) {
+          console.log('Login Response:', response.data);
+            const { access, refresh, userId  } = response.data;
             localStorage.setItem('accessToken', access);
-            localStorage.setItem('refreshToken', refresh);
+          localStorage.setItem('refreshToken', refresh);
+          localStorage.setItem('userId', userId);
+          console.log('userId stored:', localStorage.getItem('userId'));
+          
             alert('Login successful!');
             setEmail('');
             setPassword('');
-            navigate('/test'); // Redirect to the home page
+            navigate('/home'); // Redirect to the home page
         }
     } catch (error) {
         console.error('Error logging in:', error.response ? error.response.data : error.message);
@@ -68,3 +71,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

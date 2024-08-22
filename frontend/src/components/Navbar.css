@@ -1,3 +1,4 @@
+/* src/components/NavBar.css */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -6,7 +7,6 @@
     background-color: #007bff;
     color: white;
     flex-wrap: nowrap;
-  
 }
 
 .navbar-left {
@@ -23,7 +23,6 @@
     align-items: center;
     flex-grow: 1;
     justify-content: center;
-    /* Center the links */
 }
 
 .navbar-center a {
@@ -31,25 +30,15 @@
     color: white;
     text-decoration: none;
     font-weight: bold;
-  
 }
 
 .navbar-center a:hover {
     color: #ddd;
-  
 }
 
 .navbar-right {
     display: flex;
     align-items: center;
-}
-
-.navbar-right input {
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-right: 15px;
-
 }
 
 .logout-button {
@@ -59,6 +48,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 .logout-button:hover {

@@ -1,33 +1,13 @@
-/* .homepage {
+/* src/pages/HomePage.css */
+.home-page {
     display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-}
-
-.main-content {
-    display: flex;
-    flex: 1;
+    justify-content: space-between;
     padding: 20px;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-  
 }
 
-.left-sidebar,
-.right-sidebar {
-    flex: 0 0 200px;
-   
-    padding: 10px;
-    background-color: #f1f1f1;
+@media (max-width: 768px) {
+    .home-page {
+        flex-direction: column;
+        padding: 10px;
+    }
 }
-
-.feed {
-    flex: 1;
-    padding: 10px;
-    background-color: white;
-    margin: 0 20px;
-} */

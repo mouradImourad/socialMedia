@@ -1,7 +1,8 @@
+// src/components/Navbar.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import SearchBar from './SearchBar';  // Import the SearchBar component
 import './NavBar.css';
-
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -22,7 +23,8 @@ const Navbar = () => {
                 <Link to="/profile">Profile</Link>
             </div>
             <div className="navbar-right">
-                <input type="text" placeholder="Search..." />
+                {/* Integrating the SearchBar component */}
+                <SearchBar />
                 <button className="logout-button" onClick={handleLogout}>
                     Logout
                 </button>

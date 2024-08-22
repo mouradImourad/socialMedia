@@ -62,6 +62,7 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_verified:
             refresh = RefreshToken.for_user(user)
             return {
+                'userId': str(user.id),
                 'email': user.email,
                 'access': str(refresh.access_token),
                 'refresh': str(refresh)

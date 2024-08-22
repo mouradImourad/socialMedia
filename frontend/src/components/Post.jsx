@@ -1,26 +1,33 @@
 // src/components/Post.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';  // Import Link
 import axios from 'axios';
 import './Post.css';
 
 const Post = ({ post }) => {
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(post.isLiked);
+  const [likesCount, setLikesCount] = useState(post.likesCount);
 
   const handleLike = () => {
-    axios.post(`/api/v1/posts/${post.id}/like`)
-      .then(() => setLiked(!liked))
-      .catch(error => console.error('Error liking the post:', error));
+    const url = liked ? `/api/v1/posts/${post.id}/unlike` : `/api/v1/posts/${post.id}/like`;
+
+    axios.post(url)
+      .then(() => {
+        setLiked(!liked);
+        setLikesCount(liked ? likesCount - 1 : likesCount + 1);
+      })
+      .catch(error => {
+        console.error('Error liking/unliking post:', error);
+      });
   };
 
   return (
     <div className="post">
-      <Link to={`/post/${post.id}`}>
-        <p>{post.content}</p>  {/* Clicking on the post content will navigate to Post Details */}
-      </Link>
+      <p>{post.content}</p>
       {post.image && <img src={post.image} alt="Post" />}
       <div className="post-actions">
-        <button onClick={handleLike}>{liked ? 'Unlike' : 'Like'}</button>
+        <button onClick={handleLike}>
+          {liked ? 'Unlike' : 'Like'} ({likesCount})
+        </button>
         <button>Comment</button>
         <button>Share</button>
       </div>

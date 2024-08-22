@@ -2,8 +2,8 @@
 .post {
     background-color: #fff;
     padding: 15px;
-    margin-bottom: 20px;
     border-radius: 10px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -20,14 +20,10 @@
 }
 
 .post-actions button {
-    background-color: #008CBA;
-    color: white;
     padding: 10px;
+    background-color: #007bff;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-.post-actions button:hover {
-    background-color: #005f73;
 }

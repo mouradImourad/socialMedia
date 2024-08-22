@@ -1,0 +1,48 @@
+/* Layout.css */
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    min-height: calc(100vh - 60px);
+    /* Full height minus navbar */
+}
+
+/* Sidebar styling */
+.left-sidebar,
+.right-sidebar {
+    flex: 1;
+    background-color: #001f3f;
+    /* Navy blue */
+    color: #fff;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Main content should dynamically adjust its size */
+.main-content {
+    flex: 2;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+
+    .left-sidebar,
+    .right-sidebar {
+        display: none;
+    }
+
+    .main-content {
+        width: 100%;
+    }
+}

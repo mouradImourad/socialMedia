@@ -1,38 +1,26 @@
-// src/components/SearchBar.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import './SearchBar.css';
 
 const SearchBar = () => {
-    const [query, setQuery] = useState('');
-    const [results, setResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
-    const handleSearch = (e) => {
-        setQuery(e.target.value);
-        if (query.length > 2) {
-            axios.get(`/api/v1/search?query=${query}`)
-                .then(response => setResults(response.data))
-                .catch(error => console.error('Error fetching search results:', error));
-        }
-    };
+  const handleSearch = (event) => {
+    event.preventDefault();
+    // Implement search logic here
+    console.log('Searching for:', searchTerm);
+  };
 
-    return (
-        <div className="search-bar">
-            <input 
-                type="text" 
-                value={query}
-                onChange={handleSearch}
-                placeholder="Search for users or posts..."
-            />
-            {results.length > 0 && (
-                <ul className="search-results">
-                    {results.map(result => (
-                        <li key={result.id}>{result.name || result.content}</li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
+  return (
+    <form className="search-bar" onSubmit={handleSearch}>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <button type="submit">Search</button>
+    </form>
+  );
 };
 
 export default SearchBar;

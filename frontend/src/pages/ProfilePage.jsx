@@ -1,141 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import Post from '../components/Post';  
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
-    const [userData, setUserData] = useState({});
-    const [userPosts, setUserPosts] = useState([]); 
-    const [editMode, setEditMode] = useState(false);
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [profilePicture, setProfilePicture] = useState(null);
-    const [message, setMessage] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [newPostContent, setNewPostContent] = useState('');
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        axios.get('http://localhost:8000/api/v1/users/profile/', {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        })
-        .then(response => {
-            setUserData(response.data);
-            setUsername(response.data.username);
-            setEmail(response.data.email);
-            setProfilePicture(response.data.profile_picture); // Set profile picture
-            fetchUserPosts(response.data.id); 
-        })
-        .catch(error => {
-            console.error('Error fetching profile:', error.response ? error.response.data : error.message);
-        });
-    }, []);
+  const userId = localStorage.getItem('userId');  // Get the user ID from localStorage
 
-    const fetchUserPosts = (userId) => {
-        axios.get(`http://localhost:8000/api/v1/posts/user/${userId}/`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        })
-        .then(response => {
-            setUserPosts(response.data.results); // Assuming API returns paginated results
-        })
-        .catch(error => {
-            console.error('Error fetching posts:', error.response ? error.response.data : error.message);
-        });
-    };
+  // Fetch the user's posts
+  useEffect(() => {
+  const fetchPosts = async () => {
+    const accessToken = localStorage.getItem('accessToken'); // Check access token
 
-    const handleFileChange = (e) => {
-        setProfilePicture(e.target.files[0]);
-    };
+    // Log access token to verify it's present
+    console.log("Access Token:", accessToken);
 
-    const handleSave = () => {
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('email', email);
-        if (profilePicture) {
-            formData.append('profile_picture', profilePicture);
+    if (!accessToken) {
+      console.error('No access token found. User may not be logged in.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/posts/user/${userId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,  // Pass the access token in the headers
+          },
         }
+      );
+      setPosts(response.data.results);  // Assuming the API returns paginated results
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user posts:', error);
+      setLoading(false);
+    }
+  };
 
-        axios.put('http://localhost:8000/api/v1/users/profile/update/', formData, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                'Content-Type': 'multipart/form-data',
-            }
-        })
-        .then(response => {
-            setUserData(response.data);
-            setEditMode(false);
-            setMessage('Profile updated successfully!');
-        })
-        .catch(error => {
-            console.error('Error updating profile:', error.response ? error.response.data : error.message);
-            setMessage('Failed to update profile.');
-        });
-    };
+  fetchPosts();
+}, [userId]);
 
-    return (
-        <div>
-            <Navbar />
-            <div className="profile-container">
-                <div className="profile-sidebar">
-                    <div className="profile-picture-container">
-                        <img src={`${userData.profile_picture}?${new Date().getTime()}`} alt="Profile" />
-                        <h1>{userData.username}'s Profile</h1>
-                        <p>{userData.email}</p>
-                    </div>
-                    <button className="edit-profile-button" onClick={() => setEditMode(!editMode)}>
-                        Edit Profile
-                    </button>
-                    <button className="settings-button">
-                        Settings
-                    </button>
-                </div>
-                <div className="profile-details">
-                    {editMode && (
-                        <div className="edit-form">
-                            <div className="form-group">
-                                <label>Username</label>
-                                <input
-                                    type="text"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Email</label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Profile Picture</label>
-                                <input
-                                    type="file"
-                                    onChange={handleFileChange}
-                                />
-                            </div>
-                            <button onClick={handleSave}>Save Changes</button>
-                        </div>
-                    )}
-                    {message && <p>{message}</p>}
 
-                    <div className="user-posts">
-                        <h2>Your Posts</h2>
-                        {userPosts.length > 0 ? (
-                            userPosts.map(post => (
-                                <Post key={post.id} post={post} userProfilePicture={userData.profile_picture} />
-                            ))
-                        ) : (
-                            <p>No posts yet.</p>
-                        )}
-                    </div>
-                </div>
+  // Handle new post submission
+  const handleNewPostSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!newPostContent.trim()) {
+      alert('Post content cannot be empty.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/v1/posts/create/',  // Replace with your POST API endpoint
+        {
+          content: newPostContent,
+          user: userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        }
+      );
+
+      // Add the new post at the top of the post list
+      setPosts([response.data, ...posts]);
+      setNewPostContent('');  // Clear the new post input box
+    } catch (error) {
+      console.error('Error creating new post:', error);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="profile-page">
+      <h2>Your Profile</h2>
+
+      {/* New Post Box */}
+      <div className="new-post-box">
+        <form onSubmit={handleNewPostSubmit}>
+          <textarea
+            className="new-post-input"
+            placeholder="Write something..."
+            value={newPostContent}
+            onChange={(e) => setNewPostContent(e.target.value)}
+          />
+          <button type="submit" className="submit-post-button">
+            Post
+          </button>
+        </form>
+      </div>
+
+      {/* User's Previous Posts */}
+      <div className="user-posts">
+        <h3>Your Posts</h3>
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <div key={post.id} className="post">
+              <p className="post-content">{post.content}</p>
+              {/* Display the timestamp */}
+              <p className="post-timestamp">
+                Posted on {new Date(post.created_at).toLocaleString()}
+              </p>
             </div>
-        </div>
-    );
+          ))
+        ) : (
+          <p>You haven't posted anything yet.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default ProfilePage;

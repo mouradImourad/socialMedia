@@ -1,56 +1,67 @@
-/* src/components/NavBar.css */
+/* Navbar container */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #007bff;
+    padding: 15px 20px;
+    background-color: #00274d;
+    /* Navy background color */
     color: white;
-    flex-wrap: nowrap;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Slight shadow */
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
+/* Left section for logo */
 .navbar-left {
     display: flex;
     align-items: center;
 }
 
-.navbar-left .logo {
+.logo {
     height: 40px;
+    /* Adjust the logo size */
+    margin-right: 15px;
 }
 
+/* Center section for navigation links */
 .navbar-center {
     display: flex;
-    align-items: center;
-    flex-grow: 1;
-    justify-content: center;
+    gap: 20px;
 }
 
 .navbar-center a {
-    margin: 0 15px;
     color: white;
     text-decoration: none;
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
 .navbar-center a:hover {
-    color: #ddd;
+    color: #ffd700;
+    /* Gold hover effect */
 }
 
+/* Right section for logout button */
 .navbar-right {
     display: flex;
     align-items: center;
 }
 
 .logout-button {
-    padding: 5px 15px;
+    padding: 10px 20px;
     background-color: #ff4757;
+    /* Peach button */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 10px;
+    transition: background-color 0.3s ease;
 }
 
 .logout-button:hover {
-    background-color: #e84118;
+    background-color: #ff6b81;
+    /* Lighter peach hover effect */
 }

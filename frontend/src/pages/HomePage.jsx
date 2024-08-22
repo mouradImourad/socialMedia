@@ -1,16 +1,10 @@
-// src/pages/HomePage.jsx
 import React from 'react';
-import LeftSidebar from '../components/LeftSidebar';
-import Feed from '../components/Feed';
-import RightSidebar from '../components/RightSidebar';
-import './HomePage.css';
+import Feed from '../components/Feed';  // Ensure the Feed component is imported correctly
 
 const HomePage = () => {
   return (
     <div className="home-page">
-      <LeftSidebar />
-      <Feed />
-      <RightSidebar />
+      <Feed />  {/* Ensure the Feed is rendered here */}
     </div>
   );
 };

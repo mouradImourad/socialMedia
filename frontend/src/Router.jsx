@@ -1,30 +1,20 @@
-// src/Router.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SignUpPage from './pages/SignUpPage';
-import EmailVerificationPage from './pages/EmailVerificationPage';
-import LoginPage from './pages/LoginPage';
-import ProfilePage from './pages/ProfilePage';
+import Layout from './components/Layout';  // Ensure this path is correct based on the actual location
 import HomePage from './pages/HomePage';
-import PostDetailsPage from './pages/PostDetailsPage';
+import ProfilePage from './pages/ProfilePage';
+import LoginPage from './pages/LoginPage';
 
 const AppRouter = () => {
-    
   return (
     <Router>
       <Routes>
-        <Route path="/register" element={<SignUpPage />} />
+        <Route path="/home" element={<Layout><HomePage /></Layout>} />
+        <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/post/:id" element={<PostDetailsPage />} />
-        <Route path="/:lang/api/v1/users/email-verify" element={<EmailVerificationPage />} />
       </Routes>
     </Router>
   );
 };
 
 export default AppRouter;
-
-

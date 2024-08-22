@@ -1,39 +1,95 @@
-/* src/components/Feed.css */
-.feed {
-    width: 100%;
+.feed-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Space between posts */
+    padding: 20px;
+}
+
+.post-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
     max-width: 600px;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Center the post cards */
+    word-wrap: break-word;
+    /* Ensure long words or text wrap inside the post */
+    overflow: hidden;
+    /* Avoid content overflow */
+    display: flex;
+    flex-direction: column;
+    /* Allow vertical growth */
 }
 
-.post {
-    margin-bottom: 20px;
-}
-
-.post img {
-    max-width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.post-actions {
+.post-header {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    /* Space between username and timestamp */
+    align-items: center;
+    margin-bottom: 5px;
+    /* Reduce the space between the header and content */
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 5px;
 }
 
-.post-actions button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+.post-user {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #007bff;
+    /* Username in blue */
+    padding-right: 10px;
+    /* Add some space between username and timestamp */
+}
+
+.username-background {
+    background-color: #cce7ff;
+    /* Light blue background */
+    padding: 5px 10px;
     border-radius: 5px;
-    cursor: pointer;
+    display: inline-block;
 }
 
-.post-actions button:hover {
-    background-color: #0056b3;
+.post-timestamp {
+    font-size: 0.75em;
+    /* Smaller font size for timestamp */
+    color: #aaa;
+    /* Lighter grey color for subtlety */
+    padding-left: 20px;
+    /* Add more padding between username and timestamp */
+}
+
+.post-content {
+    margin-top: 10px;
+    /* Increase margin for better spacing */
+}
+
+.post-content p {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 0;
+    /* Remove any bottom margin from the paragraph */
+    white-space: pre-line;
+    /* Preserve new lines and spaces */
+}
+
+.post-content img,
+.post-content video {
+    max-width: 100%;
+    /* Ensure media fits within the post width */
+    max-height: 100%;
+    border-radius: 5px;
+    /* Consistent rounded corners for media */
+    margin-top: 10px;
+    /* Keep some space above the image/video */
+    object-fit: cover;
+    /* Makes sure the image/video fits nicely */
+}
+
+@media (max-width: 768px) {
+    .post-card {
+        max-width: 90%;
+    }
 }

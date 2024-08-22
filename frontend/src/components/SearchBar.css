@@ -1,6 +1,6 @@
-/* src/components/SearchBar.css */
 .search-bar {
-    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .search-bar input {
@@ -9,26 +9,16 @@
     border: 1px solid #ccc;
 }
 
-.search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    border: 1px solid #ccc;
+.search-bar button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
     border-radius: 5px;
-    list-style: none;
-    padding: 0;
-    margin: 5px 0;
-    z-index: 100;
-}
-
-.search-results li {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
     cursor: pointer;
+    margin-left: 5px;
 }
 
-.search-results li:hover {
-    background-color: #f1f1f1;
+.search-bar button:hover {
+    background-color: #218838;
 }

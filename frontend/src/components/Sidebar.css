@@ -1,13 +1,99 @@
-/* src/components/Sidebar.css */
+/* Global sidebar container */
 .sidebar {
-    width: 20%;
-    background-color: #f5f5f5;
-    padding: 15px;
+    background: linear-gradient(135deg, #1E3A5F, #1C2D47);
+    /* Gradient navy blue */
+    color: #FFD6A5;
+    /* Soft peach text */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    /* Softer shadow */
+    margin-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
+    /* Clean, modern font */
+    transition: transform 0.3s ease;
+    /* Smooth hover effect */
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        margin-bottom: 20px;
-    }
+.sidebar:hover {
+    transform: translateY(-5px);
+    /* Subtle lift effect on hover */
+}
+
+.sidebar h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #FFFFFF;
+    /* Clean white for headers */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* Softer shadow for better contrast */
+}
+
+.sidebar p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: #F1F5F9;
+    /* Light gray for text */
+}
+
+/* Styling for the weather and other widgets inside the sidebar */
+.sidebar-widget {
+    background-color: #243C5A;
+    /* Darker shade of navy blue */
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Inner shadow for subtle depth */
+}
+
+.sidebar-widget .emoji {
+    font-size: 3rem;
+    /* Larger emoji */
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+}
+
+.sidebar-widget .widget-title {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #FFD6A5;
+    /* Soft peach for widget title */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    /* Subtle shadow for widget title */
+}
+
+.sidebar-widget .widget-info {
+    font-size: 1.1rem;
+    color: #E0E4E8;
+    /* Softer light gray for descriptions */
+}
+
+.sidebar-widget p {
+    margin: 5px 0;
+}
+
+/* Buttons inside the sidebar */
+.sidebar-button {
+    background-color: #FFD6A5;
+    /* Soft peach for buttons */
+    color: #1E3A5F;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.sidebar-button:hover {
+    background-color: #FFE3B5;
+    /* Slightly lighter peach on hover */
+}
+
+.sidebar-button:active {
+    transform: scale(0.98);
+    /* Slight press effect */
 }

@@ -1,0 +1,22 @@
+/* Left Sidebar styling */
+.sidebar-widget {
+    background-color: #1a2b44;
+    /* Navy background */
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.widget-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    /* Subtle shadow */
+}
+
+.widget-info {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}

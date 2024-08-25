@@ -1,113 +1,128 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function Register() {
-  const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    password: '',
-    profile_picture: null,
-  });
+const Register = () => {
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [language, setLanguage] = useState('en');
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      profile_picture: e.target.files[0],
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = new FormData();
-    data.append('email', formData.email);
-    data.append('username', formData.username);
-    data.append('password', formData.password);
-    if (formData.profile_picture) {
-      data.append('profile_picture', formData.profile_picture);
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('username', username);
+    formData.append('password', password);
+    if (profilePicture) {
+      formData.append('profile_picture', profilePicture);
     }
 
-    fetch('http://localhost:8000/api/v1/register/', {
-      method: 'POST',
-      body: data,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Registration successful:', data);
-      })
-      .catch((error) => {
-        console.error('Error during registration:', error);
-      });
+    try {
+      const response = await axios.post('http://localhost:8000/api/v1/users/register/', formData);
+      if (response.status === 201) {
+        alert('Account created! Please check your email for verification.');
+        setEmail('');
+        setUsername('');
+        setPassword('');
+        setProfilePicture(null);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+        if (errorData.email) {
+          alert(`Email error: ${errorData.email.join(', ')}`);
+        }
+        if (errorData.username) {
+          alert(`Username error: ${errorData.username.join(', ')}`);
+        }
+      } else {
+        alert('An unexpected error occurred. Please try again.');
+      }
+      console.error('Error registering user:', error.response ? error.response.data : error.message);
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
-          <h2>Welcome to Our LifeX!</h2>
-          <p>
-            Join our community today by creating an account. As a member, you'll
-            have access to all our features, including personalized content,
-            exclusive offers, and much more. We’re excited to have you with us!
-          </p>
-        </div>
-        <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-align: center">
-          <h1 className="mb-4">Register</h1>
-          <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input 
-                type="email" 
-                name="email" 
-                className="form-control" 
-                id="email" 
-                placeholder="Email" 
-                onChange={handleChange} 
-              />
+    <div className="d-flex flex-column min-vh-100">
+      <div className="container mt-5 flex-grow-1">
+        <div className="row py-5" style={{ rowGap: '30px' }}>
+          {/* Left side paragraph */}
+          <div className="col-md-6 d-flex align-items-center" style={{ paddingTop: '20px' }}>
+            <div>
+              <h2>Welcome to Our LifeX</h2>
+              <p>
+                Join us today and enjoy exclusive benefits. Create an account to get started with our services, stay updated with the latest news, and more. We value your privacy and ensure that your data is secure with us.
+              </p>
+              <p>
+                Our platform offers a range of features to enhance your experience. Whether you’re here to connect with others, share your experiences, or learn something new, we're here to support you every step of the way.
+              </p>
             </div>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">Username</label>
-              <input 
-                type="text" 
-                name="username" 
-                className="form-control" 
-                id="username" 
-                placeholder="Username" 
-                onChange={handleChange} 
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
-              <input 
-                type="password" 
-                name="password" 
-                className="form-control" 
-                id="password" 
-                placeholder="Password" 
-                onChange={handleChange} 
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="profile_picture" className="form-label">Profile Picture</label>
-              <input 
-                type="file" 
-                name="profile_picture" 
-                className="form-control" 
-                id="profile_picture" 
-                onChange={handleFileChange} 
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">Register</button>
-          </form>
+          </div>
+
+          {/* Right side form */}
+          <div className="col-md-6" style={{ paddingTop: '20px' }}>
+            <h2 className="mb-4 text-center">Register</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">Username</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="profile_picture" className="form-label">Profile Picture</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="profile_picture"
+                  onChange={(e) => setProfilePicture(e.target.files[0])}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary w-100">Create Account</button>
+            </form>
+          </div>
         </div>
       </div>
+
+      <footer className="mt-4 border-top border-primary">
+        <div className="d-flex justify-content-center py-3">
+          <label className="me-2">Language: </label>
+          <a href="#" className="me-2" onClick={() => setLanguage('en')}>English</a>
+          <a href="#" className="me-2" onClick={() => setLanguage('es')}>Spanish</a>
+          <a href="#" onClick={() => setLanguage('ar')}>Arabic</a>
+        </div>
+      </footer>
     </div>
   );
-}
+};
 
 export default Register;

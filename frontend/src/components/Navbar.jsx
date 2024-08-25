@@ -1,26 +1,16 @@
 import React from 'react';
 import { Navbar, Nav, Form, FormControl, Button, Container } from 'react-bootstrap';
-import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const MyNavbar = () => {
-    const handleLogout = async () => {
-        try {
-            const refreshToken = localStorage.getItem('refresh_token');
+    const navigate = useNavigate();
 
-            const response = await axios.post('/api/v1/users/logout/', {
-                refresh_token: refreshToken,
-            });
-
-            if (response.status === 200) {
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
-                window.location.href = '/login'; // Redirect to login page
-            } else {
-                console.error('Logout failed:', response.data.detail);
-            }
-        } catch (error) {
-            console.error('An error occurred:', error.response ? error.response.data : error.message);
-        }
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userId');
+        navigate('/login');
     };
 
     return (

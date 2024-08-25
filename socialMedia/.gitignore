@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directories
+venv/
+env/
+.lmenv/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+
+# Django media and static files
+/media/
+*/static/
+
+# Django secret key and environment variables
+*.env
+
+# If using pipenv:
+Pipfile.lock
+
+# If using mypy:
+.mypy_cache/
+
+# If using PyCharm:
+.idea/
+
+# If using VS Code:
+.vscode/
+
+# MacOS:
+.DS_Store
+
+# Windows:
+Thumbs.db
+ehthumbs.db
+

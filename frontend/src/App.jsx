@@ -11,7 +11,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/register" element={<Register />} />
-        <Route path="/VerifyEmail" element={<VerifyEmail />} />
+        <Route path="/en/api/v1/users/email-verify" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );

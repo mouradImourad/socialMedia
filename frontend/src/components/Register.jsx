@@ -51,7 +51,7 @@ const Register = () => {
           {/* Left side paragraph */}
           <div className="col-md-6 d-flex align-items-center" style={{ paddingTop: '20px' }}>
             <div>
-              <h2>Welcome to Our LifeX</h2>
+              <h2>Welcome to Our Platform</h2>
               <p>
                 Join us today and enjoy exclusive benefits. Create an account to get started with our services, stay updated with the latest news, and more. We value your privacy and ensure that your data is secure with us.
               </p>

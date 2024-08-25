@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: users/models.py:12
+msgid "Users must have an email address"
+msgstr "Người dùng phải có địa chỉ email"
+
+#: users/models.py:31
+msgid "username"
+msgstr "tên người dùng"
+
+#: users/models.py:32
+msgid "verified"
+msgstr "đã xác minh"
+
+#: users/models.py:33
+msgid "active"
+msgstr "hoạt động"
+
+#: users/models.py:34
+msgid "profile picture"
+msgstr "ảnh đại diện"
+
+#: users/models.py:35
+msgid "created at"
+msgstr "ngày tạo"
+
+#: users/models.py:36
+msgid "updated at"
+msgstr "ngày cập nhật"
+
+#: users/models.py:37
+msgid "staff status"
+msgstr "trạng thái nhân viên"
+
+#: users/models.py:38
+msgid "superuser status"
+msgstr "trạng thái superuser"
+
+#: users/models.py:62
+msgid "visited at"
+msgstr "ngày truy cập"

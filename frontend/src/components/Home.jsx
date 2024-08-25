@@ -1,19 +1,26 @@
 import React from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import MyNavbar from './Navbar';
 
 function Home() {
   return (
-    <div className="container mt-5">
-      <div className="jumbotron text-center bg-light p-5 rounded">
-        <h1 className="display-4">Welcome to LifeX</h1>
-        <p className="lead">
-          This is your social media platform where you can connect with friends, share experiences, and explore new interests.
-        </p>
-        <hr className="my-4" />
-        <p>
-          Get started by creating an account or logging in to your existing account. Explore the features we offer and enjoy your stay!
-        </p>
-      </div>
-    </div>
+    <>
+      <MyNavbar />
+      <Container fluid className="p-5">
+        <Row className="justify-content-center bg-light p-5 rounded">
+          <Col md={8} className="text-center">
+            <h1 className="display-4">Welcome to LifeX</h1>
+            <p className="lead">
+              This is your social media platform where you can connect with friends, share experiences, and explore new interests.
+            </p>
+            <hr className="my-4" />
+            <p>
+              momo
+            </p>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 

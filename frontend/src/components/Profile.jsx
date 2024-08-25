@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Home() {
+function Profile() {
   return (
     <div className="container mt-5">
       <div className="jumbotron text-center bg-light p-5 rounded">
@@ -17,4 +17,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Profile;

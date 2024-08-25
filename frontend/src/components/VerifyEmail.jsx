@@ -5,6 +5,7 @@ import axios from 'axios';
 function VerifyEmail() {
   const query = new URLSearchParams(useLocation().search);
   const token = query.get('token');
+  console.log("Token:", token);
   const [message, setMessage] = useState('Verifying your email...');
 
   useEffect(() => {

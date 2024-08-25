@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -27,6 +28,7 @@ const Register = () => {
         setUsername('');
         setPassword('');
         setProfilePicture(null);
+        
       }
     } catch (error) {
       if (error.response && error.response.data) {

@@ -32,7 +32,7 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token = RefreshToken.for_user(user).access_token
-        current_site = 'localhost:8000'  # Change this to your frontend URL
+        current_site = 'localhost:5173'  # Change this to your frontend URL
         relative_link = reverse('email-verify')
         absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
         email_body = f'Hi {user.username}, use the link below to verify your email \n{absurl}'

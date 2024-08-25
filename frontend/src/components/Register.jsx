@@ -32,7 +32,7 @@ function Register() {
       data.append('profile_picture', formData.profile_picture);
     }
 
-    fetch('/api/v1/users/register/', {
+    fetch('http://localhost:8000/api/v1/register/', {
       method: 'POST',
       body: data,
     })

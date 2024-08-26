@@ -4,9 +4,9 @@ import Register from './components/Register';
 import VerifyEmail from './components/VerifyEmail';
 import Login from './components/Login';
 import Home from './components/Home';
-import Profile from './components/Profile';
-import CreatePost from './components/CreatePost';
-// import ProfileUpdate from './components/ProfileUpdate';
+import ProfilePage from './components/ProfilePage';
+// import CreatePost from './components/CreatePost';
+
 
 
 
@@ -18,8 +18,8 @@ function App() {
         <Route path="/en/api/v1/users/email-verify" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/create-post" component={CreatePost} />
+        <Route path="/Profile" element={<ProfilePage />} />
+        {/* <Route path="/create-post" component={CreatePost} /> */}
         {/* <Route path="/profile/update" element={<ProfileUpdate />} /> */}
       </Routes>
     </Router>

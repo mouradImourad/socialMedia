@@ -5,6 +5,7 @@ import VerifyEmail from './components/VerifyEmail';
 import Login from './components/Login';
 import Home from './components/Home';
 import Profile from './components/Profile';
+import CreatePost from './components/CreatePost';
 // import ProfileUpdate from './components/ProfileUpdate';
 
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/create-post" component={CreatePost} />
         {/* <Route path="/profile/update" element={<ProfileUpdate />} /> */}
       </Routes>
     </Router>

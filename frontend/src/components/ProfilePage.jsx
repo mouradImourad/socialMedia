@@ -1,22 +1,54 @@
 // src/components/ProfilePage.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MyNavbar from './MyNavbar';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, Image, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const ProfilePage = () => {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get('/api/v1/users/profile/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+        setProfile(response.data);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <>
       <MyNavbar />
       <Container fluid className="mt-3">
         <Row>
           {/* Left Sidebar */}
-          <Col md={3} className="bg-light">
+          <Col md={3} className="bg-light text-center">
             <Card className="mb-3">
               <Card.Body>
-                <Card.Title>Profile Information</Card.Title>
-                <Card.Text>
-                  This is the left sidebar where you can place profile information or other details.
-                </Card.Text>
+                {profile && (
+                  <>
+                    <Image
+                      src={profile.profile_picture}
+                      roundedCircle
+                      fluid
+                      className="mb-3"
+                      style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                    />
+                    <Card.Title>{profile.username}</Card.Title>
+                    <Button as={Link} to="/profile/update" variant="secondary">
+                      Update Profile
+                    </Button>
+                  </>
+                )}
               </Card.Body>
             </Card>
           </Col>

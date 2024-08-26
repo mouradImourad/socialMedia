@@ -6,7 +6,7 @@ import Login from './components/Login';
 import Home from './components/Home';
 import ProfilePage from './components/ProfilePage';
 // import CreatePost from './components/CreatePost';
-
+import ProfileUpdatePage from './components/ProfileUpdatePage';
 
 
 
@@ -20,7 +20,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/Profile" element={<ProfilePage />} />
         {/* <Route path="/create-post" component={CreatePost} /> */}
-        {/* <Route path="/profile/update" element={<ProfileUpdate />} /> */}
+        <Route path="/profile/update" element={<ProfileUpdatePage />} />
       </Routes>
     </Router>
   );

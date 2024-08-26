@@ -1,13 +1,13 @@
+// src/components/ProfileUpdate.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Button, Container, Col } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 
-const ProfileUpdate = () => {
+const ProfileUpdate = ({ onUpdate }) => {  // Add an onUpdate prop to handle the update
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
-    const [profilePicturePreview, setProfilePicturePreview] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,8 +20,6 @@ const ProfileUpdate = () => {
             const { email, username, profile_picture } = response.data;
             setEmail(email || '');
             setUsername(username || '');
-            setProfilePicture(profile_picture || null);
-            setProfilePicturePreview(profile_picture || null);
         })
         .catch(error => {
             console.error('Error fetching profile data:', error);
@@ -31,7 +29,6 @@ const ProfileUpdate = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setProfilePicture(file);
-        setProfilePicturePreview(URL.createObjectURL(file)); // Preview the selected image before upload
     };
 
     const handleSubmit = (e) => {
@@ -57,7 +54,10 @@ const ProfileUpdate = () => {
         })
         .then(response => {
             console.log('Profile updated successfully:', response.data);
-            navigate('/profile');
+            if (onUpdate) {
+                onUpdate(response.data);  // Update the profile data in the parent component
+            }
+            navigate('/profile');  // Redirect to profile page
         })
         .catch(error => {
             if (error.response && error.response.data) {
@@ -105,17 +105,6 @@ const ProfileUpdate = () => {
                     Save Changes
                 </Button>
             </Form>
-
-            {profilePicturePreview && (
-                <Col md={4} className="text-center mt-4">
-                    <img 
-                        src={profilePicturePreview} 
-                        className="rounded-circle" 
-                        alt="Profile" 
-                        width="150" 
-                    />
-                </Col>
-            )}
         </Container>
     );
 };

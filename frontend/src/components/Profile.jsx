@@ -104,6 +104,23 @@ const Profile = () => {
     }
   };
 
+  const handleLikeUnlike = async (postId) => {
+    try {
+      const response = await axios.put(`http://localhost:8000/api/v1/posts/${postId}/like/`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      // Update the liked post in the state
+      setUserPosts(userPosts.map(post => 
+        post.id === postId ? { ...post, likes_count: post.likes_count + (response.data.message === 'Post liked' ? 1 : -1) } : post
+      ));
+    } catch (error) {
+      setError('Error liking/unliking post');
+    }
+  };
+
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="alert alert-danger mt-5">{error}</div>;
 
@@ -183,26 +200,35 @@ const Profile = () => {
             </div>
 
             {/* User Posts */}
-            {userPosts.length > 0 ? (
-              userPosts.map(post => (
-                <div key={post.id} className="card shadow-sm mb-4">
-                  <div className="card-body">
-                    <h5 className="card-title">{post.user}</h5>
-                    <p className="card-text">{post.content}</p>
-                    {post.image && <img src={post.image} alt="Post" className="img-fluid rounded" />}
-                    {post.video && (
-                      <video controls className="img-fluid rounded mt-3">
-                        <source src={post.video} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                    <p className="text-muted mt-3">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>No posts to display.</p>
-            )}
+{userPosts.length > 0 ? (
+  userPosts.map(post => (
+    <div key={post.id} className="card shadow-sm mb-4" style={{ height: '300px' }}>
+      <div className="card-body d-flex flex-column">
+        <h5 className="card-title">{post.user}</h5>
+        <p className="card-text flex-grow-1 overflow-auto">{post.content}</p>
+        {post.image && <img src={post.image} alt="Post" className="img-fluid rounded mt-2" />}
+        {post.video && (
+          <video controls className="img-fluid rounded mt-2">
+            <source src={post.video} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <p className="text-muted">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
+          <button 
+            className="btn btn-outline-primary"
+            onClick={() => handleLikeUnlike(post.id)}
+          >
+            Like ({post.likes_count})
+          </button>
+        </div>
+      </div>
+    </div>
+  ))
+) : (
+  <p>No posts to display.</p>
+)}
+
           </div>
 
           {/* Right Sidebar - Placeholder for future content */}

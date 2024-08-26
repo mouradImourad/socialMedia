@@ -7,6 +7,7 @@ const ProfileUpdate = () => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
+    const [profilePicturePreview, setProfilePicturePreview] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,11 +21,18 @@ const ProfileUpdate = () => {
             setEmail(email || '');
             setUsername(username || '');
             setProfilePicture(profile_picture || null);
+            setProfilePicturePreview(profile_picture || null);
         })
         .catch(error => {
             console.error('Error fetching profile data:', error);
         });
     }, []);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setProfilePicture(file);
+        setProfilePicturePreview(URL.createObjectURL(file)); // Preview the selected image before upload
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -49,9 +57,6 @@ const ProfileUpdate = () => {
         })
         .then(response => {
             console.log('Profile updated successfully:', response.data);
-            setEmail(response.data.email);
-            setUsername(response.data.username);
-            setProfilePicture(response.data.profile_picture);
             navigate('/profile');
         })
         .catch(error => {
@@ -92,7 +97,7 @@ const ProfileUpdate = () => {
                     <Form.Label>Profile Picture</Form.Label>
                     <Form.Control
                         type="file"
-                        onChange={(e) => setProfilePicture(e.target.files[0])}
+                        onChange={handleFileChange}
                     />
                 </Form.Group>
 
@@ -101,14 +106,16 @@ const ProfileUpdate = () => {
                 </Button>
             </Form>
 
-            <Col md={4} className="text-center mt-4">
-                <img 
-                    src={`${profilePicture}?${new Date().getTime()}`} 
-                    className="rounded-circle" 
-                    alt="Profile" 
-                    width="150" 
-                />
-            </Col>
+            {profilePicturePreview && (
+                <Col md={4} className="text-center mt-4">
+                    <img 
+                        src={profilePicturePreview} 
+                        className="rounded-circle" 
+                        alt="Profile" 
+                        width="150" 
+                    />
+                </Col>
+            )}
         </Container>
     );
 };

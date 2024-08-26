@@ -1,116 +1,178 @@
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
-import MyNavbar from './Navbar';
-import md5 from 'md5';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-
-// Function to get the Gravatar URL based on the user's email
-const getGravatarUrl = (email) => {
-    if (!email) {
-        return 'default-avatar-url'; // Replace with your default avatar URL
-    }
-    const hash = md5(email.trim().toLowerCase());
-    return `https://www.gravatar.com/avatar/${hash}`;
-};
+import { Container, Image, Spinner, Button, Form, Alert, Row, Col } from 'react-bootstrap';
+import Navbar from './Navbar';
 
 const Profile = () => {
-    const [userEmail, setUserEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [profilePicture, setProfilePicture] = useState('');
+    const [profile, setProfile] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [editing, setEditing] = useState(false); // State to toggle edit mode
+    const [changingPassword, setChangingPassword] = useState(false); // State to toggle change password mode
+    const [message, setMessage] = useState(null); // For success or error messages
 
     useEffect(() => {
-        // Fetching user profile data from the backend
-        axios.get('/api/v1/users/profile/', {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        const fetchProfile = async () => {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                const response = await axios.get('http://localhost:8000/api/v1/users/profile/', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                setProfile(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching the profile', error);
+                setLoading(false);
             }
-        })
-        .then(response => {
-            const { email, username, profile_picture } = response.data;
-            setUserEmail(email);
-            setUsername(username);
-            setProfilePicture(profile_picture);
-        })
-        .catch(error => {
-            console.error('Error fetching profile data:', error);
-        });
+        };
+
+        fetchProfile();
     }, []);
+
+    const handleDeactivateAccount = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            await axios.put('http://localhost:8000/api/v1/users/account-deactivate/', {}, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            setMessage({ type: 'warning', text: 'Account deactivated successfully!' });
+        } catch (error) {
+            console.error('Error deactivating the account', error);
+            setMessage({ type: 'danger', text: 'Failed to deactivate account. Please try again.' });
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            await axios.delete('http://localhost:8000/api/v1/users/delete-account/', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            setMessage({ type: 'danger', text: 'Account deleted successfully!' });
+            // Optional: Redirect to a different page after account deletion
+        } catch (error) {
+            console.error('Error deleting the account', error);
+            setMessage({ type: 'danger', text: 'Failed to delete account. Please try again.' });
+        }
+    };
+
+    if (loading) {
+        return (
+            <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+                <Spinner animation="border" />
+            </Container>
+        );
+    }
+
+    const buttonStyle = {
+        width: '200px', // You can adjust the width as needed
+    };
 
     return (
         <>
-            <MyNavbar />
-            <Container>
-                <Row className="mt-4">
-                    <Col md={4} className="text-center">
-                        <img src={profilePicture || 'default-profile-picture-url'} className="rounded-circle" alt="Profile" width="150" />
-                    </Col>
-                    <Col md={8} className="text-center">
-                        {/* Display Gravatar based on the user's email */}
-                        <img src={getGravatarUrl(userEmail)} className="rounded-circle" alt="User Gravatar" width="150" />
-                        <h4>{username}</h4>
-                        <Button variant="outline-primary" as={Link} to="/profile/update">
-                            Edit Profile
-                        </Button>
-                    </Col>
-                </Row>
-
-                <Row className="mt-4">
-                    <Col md={4}>
-                        <h4 className="mt-4">Account Settings</h4>
-                        <ul className="list-group">
-                            <li className="list-group-item">Update Your Profile</li>
-                            <li className="list-group-item">Change Your Password</li>
-                            <li className="list-group-item">Deactivate Your Account</li>
-                            <li className="list-group-item">Reactivate Your Account</li>
-                            <li className="list-group-item">Delete Your Account</li>
-                        </ul>
-                    </Col>
-                    <Col md={8}>
-                        <h4>Friends</h4>
-                        <Row>
-                            <Col xs={4}><img src="friend1.jpg" className="rounded-circle" alt="Friend 1" width="70" /></Col>
-                            <Col xs={4}><img src="friend2.jpg" className="rounded-circle" alt="Friend 2" width="70" /></Col>
-                            <Col xs={4}><img src="friend3.jpg" className="rounded-circle" alt="Friend 3" width="70" /></Col>
-                        </Row>
-                        <Row className="mt-2">
-                            <Col xs={4}><img src="friend4.jpg" className="rounded-circle" alt="Friend 4" width="70" /></Col>
-                            <Col xs={4}><img src="friend5.jpg" className="rounded-circle" alt="Friend 5" width="70" /></Col>
-                            <Col xs={4}><img src="friend6.jpg" className="rounded-circle" alt="Friend 6" width="70" /></Col>
-                        </Row>
-                        <Button variant="link" className="mt-3">See All Friends</Button>
-
-                        <h4 className="mt-4">Create Post</h4>
-                        <Form>
-                            <Form.Group>
-                                <Form.Control type="text" placeholder="What's on your mind?" />
+            <Navbar />
+            <Container fluid className="mt-3" style={{ paddingLeft: 0 }}>
+                <div style={{ marginTop: '10px', marginLeft: '10px', position: 'absolute' }}>
+                    {message && <Alert variant={message.type}>{message.text}</Alert>}
+                    <Image 
+                        src={profile.profile_picture} 
+                        roundedCircle 
+                        fluid 
+                        style={{ width: '200px', height: '200px', objectFit: 'cover' }} 
+                    />
+                    <h3 className="mt-3">{profile.username}</h3> {/* Display Username */}
+                    <p>{profile.email}</p> {/* Display Email */}
+                    <Row className="mt-3">
+                        <Col>
+                            <Button variant="primary" onClick={() => setEditing(!editing)} className="mb-2" style={buttonStyle}>
+                                {editing ? 'Cancel' : 'Edit Profile'}
+                            </Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="primary" onClick={() => setChangingPassword(!changingPassword)} className="mb-2" style={buttonStyle}>
+                                {changingPassword ? 'Cancel' : 'Change Password'}
+                            </Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="primary" onClick={handleDeactivateAccount} className="mb-2" style={buttonStyle}>
+                                Deactivate Account
+                            </Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="primary" onClick={handleDeleteAccount} style={buttonStyle}>
+                                Delete Account
+                            </Button>
+                        </Col>
+                    </Row>
+                    {editing && (
+                        <Form onSubmit={handleFormSubmit} className="mt-3">
+                            <Form.Group controlId="formEmail">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    name="email"
+                                    value={profile.email}
+                                    onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                                />
                             </Form.Group>
-                            <Button variant="outline-secondary" className="mr-2">Attach Photo/Video</Button>
-                            <Button variant="primary">Post</Button>
+                            <Form.Group controlId="formUsername">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="username"
+                                    value={profile.username}
+                                    onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Button variant="success" type="submit" className="mt-3 btn-block">
+                                Save Changes
+                            </Button>
                         </Form>
-
-                        <h4 className="mt-4">Your Posts</h4>
-                        <Row className="mb-4">
-                            <Col xs={12} className="text-center mb-2">
-                                <img src="profile-picture-url" className="rounded-circle" alt="User" width="50" />
-                            </Col>
-                            <Col xs={12}>
-                                <Card className="mb-2">
-                                    <Card.Body>
-                                        <Card.Text>Your latest post content here...</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                                <div className="d-flex justify-content-start">
-                                    <Button variant="link">Like</Button>
-                                    <Button variant="link">Comment</Button>
-                                </div>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
+                    )}
+                    {changingPassword && (
+                        <Form onSubmit={handleChangePasswordSubmit} className="mt-3">
+                            <Form.Group controlId="formOldPassword">
+                                <Form.Label>Current Password</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    name="old_password"
+                                    value={passwordData.old_password}
+                                    onChange={(e) => setPasswordData({ ...passwordData, old_password: e.target.value })}
+                                    required
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formNewPassword">
+                                <Form.Label>New Password</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    name="new_password"
+                                    value={passwordData.new_password}
+                                    onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                                    required
+                                />
+                            </Form.Group>
+                            <Button variant="success" type="submit" className="mt-3 btn-block">
+                                Change Password
+                            </Button>
+                        </Form>
+                    )}
+                </div>
             </Container>
         </>
     );
-}
+};
 
 export default Profile;

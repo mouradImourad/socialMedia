@@ -1,18 +1,57 @@
-import React from 'react';
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import MyNavbar from './Navbar';
+import md5 from 'md5';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+// Function to get the Gravatar URL based on the user's email
+const getGravatarUrl = (email) => {
+    if (!email) {
+        return 'default-avatar-url'; // Replace with your default avatar URL
+    }
+    const hash = md5(email.trim().toLowerCase());
+    return `https://www.gravatar.com/avatar/${hash}`;
+};
 
 const Profile = () => {
+    const [userEmail, setUserEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [profilePicture, setProfilePicture] = useState('');
+
+    useEffect(() => {
+        // Fetching user profile data from the backend
+        axios.get('/api/v1/users/profile/', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
+        .then(response => {
+            const { email, username, profile_picture } = response.data;
+            setUserEmail(email);
+            setUsername(username);
+            setProfilePicture(profile_picture);
+        })
+        .catch(error => {
+            console.error('Error fetching profile data:', error);
+        });
+    }, []);
+
     return (
         <>
             <MyNavbar />
             <Container>
                 <Row className="mt-4">
                     <Col md={4} className="text-center">
-                        <img src="profile-picture-url" className="rounded-circle" alt="Profile" width="150" />
+                        <img src={profilePicture || 'default-profile-picture-url'} className="rounded-circle" alt="Profile" width="150" />
                     </Col>
-                    <Col md={8}>
-                        <h3>Your Motto or Quote</h3>
+                    <Col md={8} className="text-center">
+                        {/* Display Gravatar based on the user's email */}
+                        <img src={getGravatarUrl(userEmail)} className="rounded-circle" alt="User Gravatar" width="150" />
+                        <h4>{username}</h4>
+                        <Button variant="outline-primary" as={Link} to="/profile/update">
+                            Edit Profile
+                        </Button>
                     </Col>
                 </Row>
 
@@ -22,9 +61,8 @@ const Profile = () => {
                         <ul className="list-group">
                             <li className="list-group-item">Update Your Profile</li>
                             <li className="list-group-item">Change Your Password</li>
-                            <li className="list-group-item">Deactivating Your Account</li>
-                            <li className="list-group-item">Reactivating Your Account</li>
-                            <li className="list-group-item">Confirm Activation</li>
+                            <li className="list-group-item">Deactivate Your Account</li>
+                            <li className="list-group-item">Reactivate Your Account</li>
                             <li className="list-group-item">Delete Your Account</li>
                         </ul>
                     </Col>
@@ -68,7 +106,6 @@ const Profile = () => {
                                 </div>
                             </Col>
                         </Row>
-                        {/* Repeat for additional posts */}
                     </Col>
                 </Row>
             </Container>

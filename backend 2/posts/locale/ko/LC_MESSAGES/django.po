@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-18 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Korean <LL@li.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "name"
+msgstr "이름"
+
+msgid "created at"
+msgstr "생성일"
+
+msgid "content"
+msgstr "내용"
+
+msgid "image"
+msgstr "이미지"
+
+msgid "video"
+msgstr "비디오"
+
+msgid "updated at"
+msgstr "업데이트 날짜"
+
+msgid "anonymous"
+msgstr "익명"
+
+msgid "shared from"
+msgstr "공유 출처"
+
+msgid "likes"
+msgstr "좋아요"
+
+msgid "tags"
+msgstr "태그"
+
+msgid "views"
+msgstr "조회수"
+
+msgid "hashtags"
+msgstr "해시태그"
+
+msgid "Like"
+msgstr "좋아요"
+
+msgid "Love"
+msgstr "사랑해요"
+
+msgid "Haha"
+msgstr "하하"
+
+msgid "Wow"
+msgstr "와우"
+
+msgid "Sad"
+msgstr "슬퍼요"
+
+msgid "Angry"
+msgstr "화나요"
+
+msgid "reaction type"
+msgstr "반응 유형"
+
+msgid "reaction"
+msgstr "반응"
+
+msgid "reactions"
+msgstr "반응들"
+
+msgid "bookmarked at"
+msgstr "북마크 날짜"
+
+msgid "bookmark"
+msgstr "북마크"
+
+msgid "bookmarks"
+msgstr "북마크들"

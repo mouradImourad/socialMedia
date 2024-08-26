@@ -158,10 +158,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'social_media_db',
-        'USER': 'mourd',
+        'USER': 'mourad',
         'PASSWORD': 'sasa',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 

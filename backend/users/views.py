@@ -20,7 +20,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_str, force_bytes, smart_str, smart_bytes, DjangoUnicodeDecodeError
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-
+import logging
 
 
 class RegisterView(generics.GenericAPIView):
@@ -31,21 +31,21 @@ class RegisterView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        token = RefreshToken.for_user(user).access_token
-        current_site = 'localhost:5173'  # Change this to your frontend URL
-        relative_link = reverse('email-verify')
-        absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
-        email_body = f'Hi {user.username}, use the link below to verify your email \n{absurl}'
+        # token = RefreshToken.for_user(user).access_token
+        # current_site = 'localhost:5173'  # Change this to your frontend URL
+        # relative_link = reverse('email-verify')
+        # absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
+        # email_body = f'Hi {user.username}, use the link below to verify your email \n{absurl}'
 
-        print(f'Token: {token}') 
+        # print(f'Token: {token}') 
         
-        send_mail(
-            'Verify your email',
-            email_body,
-            'mm697533@gmail.com',
-            [user.email],
-            fail_silently=False,
-        )
+        # send_mail(
+        #     'Verify your email',
+        #     email_body,
+        #     'mm697533@gmail.com',
+        #     [user.email],
+        #     fail_silently=False,
+        # )
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -59,14 +59,28 @@ class VerifyEmail(generics.GenericAPIView):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
             user = User.objects.get(id=payload['user_id'])
+
+            logging.info(f"User found: {user.email}")
             if not user.is_verified:
                 user.is_verified = True
                 user.save()
+                logging.info(f"User {user.email} has been marked as verified.")
+            else:
+                logging.info(f"User {user.email} was already verified.")
+
             return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+
         except jwt.ExpiredSignatureError:
+            logging.error("Activation link expired.")
             return Response({'error': 'Activation link expired'}, status=status.HTTP_400_BAD_REQUEST)
+        
         except jwt.exceptions.DecodeError:
+            logging.error("Invalid token.")
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logging.error(f"Unexpected error during verification: {e}")
+            return Response({'error': 'Something went wrong during verification'}, status=status.HTTP_400_BAD_REQUEST)
         
 
 

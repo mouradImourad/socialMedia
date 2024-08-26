@@ -15,9 +15,10 @@ const Profile = () => {
   const [error, setError] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [newProfilePicture, setNewProfilePicture] = useState(null);
-
-  const navigate = useNavigate();
+  const [newPostContent, setNewPostContent] = useState('');
+  const [userPosts, setUserPosts] = useState([]);  // Ensure this is an array
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -29,6 +30,7 @@ const Profile = () => {
         });
         setProfileData(response.data);
         setNewUsername(response.data.username);
+        fetchUserPosts(response.data.id);  // Fetch posts after getting the user ID
         setLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -37,6 +39,19 @@ const Profile = () => {
           setError('Error fetching profile data');
         }
         setLoading(false);
+      }
+    };
+
+    const fetchUserPosts = async (userId) => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/v1/posts/user/${userId}/`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        setUserPosts(Array.isArray(response.data) ? response.data : []);  // Ensure the response is an array
+      } catch (error) {
+        setError('Error fetching user posts');
       }
     };
 
@@ -60,12 +75,32 @@ const Profile = () => {
       });
       setProfileData(response.data);
       alert('Profile updated successfully');
-      
       setNewUsername('');
       setNewProfilePicture(null);
       fileInputRef.current.value = null;
     } catch (error) {
       setError('Error updating profile');
+    }
+  };
+
+  const handlePostCreation = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post('http://localhost:8000/api/v1/posts/create/', 
+      {
+        content: newPostContent
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      setUserPosts([response.data, ...userPosts]); // Add the new post to the top of the list
+      setNewPostContent(''); // Clear the post creation form
+    } catch (error) {
+      setError('Error creating post');
     }
   };
 
@@ -77,7 +112,7 @@ const Profile = () => {
       <MyNavbar />
       <div className="container mt-5">
         <div className="row">
-          {/* Left Column - Profile Picture and Update Form */}
+          {/* Left Sidebar - Profile Picture and Update Form */}
           <div className="col-md-3">
             <div className="card shadow-sm mb-4">
               <div className="card-body text-center">
@@ -126,11 +161,54 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Middle Column - Empty for now */}
-          <div className="col-md-6"></div>
+          {/* Middle Content Area - Post Creation and User Posts */}
+          <div className="col-md-6">
+            {/* Post Creation */}
+            <div className="card shadow-sm mb-4">
+              <div className="card-body">
+                <h3 className="mb-4 text-center">Create Post</h3>
+                <form onSubmit={handlePostCreation}>
+                  <div className="mb-3">
+                    <textarea
+                      className="form-control"
+                      placeholder="What's on your mind?"
+                      value={newPostContent}
+                      onChange={(e) => setNewPostContent(e.target.value)}
+                      rows="4"
+                    ></textarea>
+                  </div>
+                  <button type="submit" className="btn btn-primary w-100">Post</button>
+                </form>
+              </div>
+            </div>
 
-          {/* Right Column - Empty for now */}
-          <div className="col-md-3"></div>
+            {/* User Posts */}
+            {userPosts.length > 0 ? (
+              userPosts.map(post => (
+                <div key={post.id} className="card shadow-sm mb-4">
+                  <div className="card-body">
+                    <h5 className="card-title">{post.user}</h5>
+                    <p className="card-text">{post.content}</p>
+                    {post.image && <img src={post.image} alt="Post" className="img-fluid rounded" />}
+                    {post.video && (
+                      <video controls className="img-fluid rounded mt-3">
+                        <source src={post.video} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+                    <p className="text-muted mt-3">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No posts to display.</p>
+            )}
+          </div>
+
+          {/* Right Sidebar - Placeholder for future content */}
+          <div className="col-md-3">
+            {/* Future content can go here */}
+          </div>
         </div>
       </div>
     </>

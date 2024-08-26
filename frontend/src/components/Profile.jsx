@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MyNavbar from './MyNavbar';
@@ -16,8 +16,11 @@ const Profile = () => {
   const [newUsername, setNewUsername] = useState('');
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newPostContent, setNewPostContent] = useState('');
-  const [userPosts, setUserPosts] = useState([]);  // Ensure this is an array
-  const fileInputRef = useRef(null);
+  const [userPosts, setUserPosts] = useState([]);  
+  const [nextPage, setNextPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const fileInputRef = useRef(null); // Add this reference
+  const observer = useRef();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +33,7 @@ const Profile = () => {
         });
         setProfileData(response.data);
         setNewUsername(response.data.username);
-        fetchUserPosts(response.data.id);  // Fetch posts after getting the user ID
+        fetchUserPosts(response.data.id, 1);  // Fetch the first page of posts
         setLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -42,21 +45,25 @@ const Profile = () => {
       }
     };
 
-    const fetchUserPosts = async (userId) => {
-      try {
-        const response = await axios.get(`http://localhost:8000/api/v1/posts/user/${userId}/`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-        setUserPosts(Array.isArray(response.data) ? response.data : []);  // Ensure the response is an array
-      } catch (error) {
-        setError('Error fetching user posts');
-      }
-    };
-
     fetchProfileData();
   }, [navigate]);
+
+  const fetchUserPosts = async (userId, page) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/v1/posts/user/${userId}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        params: { page: page }
+      });
+
+      setUserPosts(prevPosts => [...prevPosts, ...response.data.results]);  // Append new posts to the list
+      setHasMore(response.data.next !== null);  // Check if there are more pages
+      setNextPage(page + 1);
+    } catch (error) {
+      setError('Error fetching user posts');
+    }
+  };
 
   const handleProfileUpdate = async (event) => {
     event.preventDefault();
@@ -68,18 +75,30 @@ const Profile = () => {
     }
 
     try {
+      // Ensure Profile Update is Saved
       const response = await axios.patch('http://localhost:8000/api/v1/users/profile/update/', formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
-      setProfileData(response.data);
+
+      console.log('Profile update response:', response.data); // Debugging: Check the response data
+
+      // Refetch Profile Data After Update
+      const profileResponse = await axios.get('http://localhost:8000/api/v1/users/profile/', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      setProfileData(profileResponse.data); // Update the profile data with the latest from the server
+
       alert('Profile updated successfully');
       setNewUsername('');
       setNewProfilePicture(null);
       fileInputRef.current.value = null;
     } catch (error) {
       setError('Error updating profile');
+      console.error('Profile update error:', error); // Debugging: Log the error
     }
   };
 
@@ -120,6 +139,17 @@ const Profile = () => {
       setError('Error liking/unliking post');
     }
   };
+
+  const lastPostElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        fetchUserPosts(profileData.id, nextPage);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore, nextPage, profileData.id]);
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="alert alert-danger mt-5">{error}</div>;
@@ -168,7 +198,7 @@ const Profile = () => {
                       id="profile_picture"
                       name="profile_picture"
                       className="form-control"
-                      ref={fileInputRef}
+                      ref={fileInputRef} // Add reference to the file input
                       onChange={(e) => setNewProfilePicture(e.target.files[0])}
                     />
                   </div>
@@ -201,8 +231,13 @@ const Profile = () => {
 
             {/* User Posts */}
 {userPosts.length > 0 ? (
-  userPosts.map(post => (
-    <div key={post.id} className="card shadow-sm mb-4" style={{ height: '300px' }}>
+  userPosts.map((post, index) => (
+    <div
+      key={`${post.id}-${index}`}  // Create a unique key
+      className="card shadow-sm mb-4"
+      style={{ height: '300px' }}
+      ref={userPosts.length === index + 1 ? lastPostElementRef : null}
+    >
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{post.user}</h5>
         <p className="card-text flex-grow-1 overflow-auto">{post.content}</p>
@@ -213,21 +248,17 @@ const Profile = () => {
             Your browser does not support the video tag.
           </video>
         )}
-        <div className="d-flex justify-content-between align-items-center mt-3">
-          <p className="text-muted">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
-          <button 
-            className="btn btn-outline-primary"
-            onClick={() => handleLikeUnlike(post.id)}
-          >
-            Like ({post.likes_count})
-          </button>
-        </div>
+        <p className="text-muted mt-3">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
+        <button className="btn btn-outline-primary" onClick={() => handleLikeUnlike(post.id)}>
+          {post.likes_count} Like{post.likes_count !== 1 ? 's' : ''}
+        </button>
       </div>
     </div>
   ))
 ) : (
   <p>No posts to display.</p>
 )}
+
 
           </div>
 

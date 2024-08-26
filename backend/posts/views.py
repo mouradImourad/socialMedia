@@ -74,10 +74,11 @@ class PostDetailView(generics.RetrieveAPIView):
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user_id = self.kwargs['user_id']
-        return Post.objects.filter(user_id=user_id)
+        return Post.objects.filter(user_id=user_id).order_by('-created_at')
     
 
 

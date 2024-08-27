@@ -19,6 +19,8 @@ const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
   const [nextPage, setNextPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [newCommentContent, setNewCommentContent] = useState(''); 
+  const [commentError, setCommentError] = useState(''); 
   const fileInputRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
@@ -26,7 +28,6 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfileData = async (retryCount = 3, delay = 1000) => {
-      // Debounce check: If last fetch was less than 1 second ago, skip this fetch
       const now = Date.now();
       if (now - lastFetchTime.current < 1000) {
         return;
@@ -166,6 +167,33 @@ const Profile = () => {
     }
   };
 
+  const handleCommentSubmit = async (postId) => {
+    if (newCommentContent.trim() === '') {
+        setCommentError('Comment cannot be empty');
+        return;
+    }
+
+    try {
+        const response = await axios.post(`http://localhost:8000/api/v1/posts/${postId}/comment/`, 
+        {
+            content: newCommentContent
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        });
+
+        
+        setNewCommentContent('');
+        setCommentError('');
+    } catch (error) {
+        console.error('Error submitting comment:', error); 
+        setCommentError('Error submitting comment');
+    }
+};
+
+
   const lastPostElementRef = useCallback(node => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
@@ -283,6 +311,24 @@ const Profile = () => {
                       </button>
                       <button className="btn btn-outline-danger" onClick={() => handlePostDelete(post.id)}>
                         Delete
+                      </button>
+                    </div>
+
+                    {/* Comment Section */}
+                    <div className="mt-3">
+                      <textarea
+                        className="form-control"
+                        placeholder="Write a comment..."
+                        value={newCommentContent}
+                        onChange={(e) => setNewCommentContent(e.target.value)}
+                        rows="2"
+                      ></textarea>
+                      {commentError && <div className="text-danger mt-1">{commentError}</div>}
+                      <button
+                        className="btn btn-outline-secondary mt-2"
+                        onClick={() => handleCommentSubmit(post.id)}
+                      >
+                        Comment
                       </button>
                     </div>
                   </div>

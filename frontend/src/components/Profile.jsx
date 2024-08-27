@@ -16,15 +16,23 @@ const Profile = () => {
   const [newUsername, setNewUsername] = useState('');
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newPostContent, setNewPostContent] = useState('');
-  const [userPosts, setUserPosts] = useState([]);  
+  const [userPosts, setUserPosts] = useState([]);
   const [nextPage, setNextPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const fileInputRef = useRef(null); // Add this reference
+  const fileInputRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
+  const lastFetchTime = useRef(0);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchProfileData = async (retryCount = 3, delay = 1000) => {
+      // Debounce check: If last fetch was less than 1 second ago, skip this fetch
+      const now = Date.now();
+      if (now - lastFetchTime.current < 1000) {
+        return;
+      }
+      lastFetchTime.current = now;
+
       try {
         const response = await axios.get('http://localhost:8000/api/v1/users/profile/', {
           headers: {
@@ -33,15 +41,17 @@ const Profile = () => {
         });
         setProfileData(response.data);
         setNewUsername(response.data.username);
-        fetchUserPosts(response.data.id, 1);  // Fetch the first page of posts
+        fetchUserPosts(response.data.id, 1);
         setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 429 && retryCount > 0) {
+          setTimeout(() => fetchProfileData(retryCount - 1, delay * 2), delay);
+        } else if (error.response && error.response.status === 401) {
           navigate('/login');
         } else {
           setError('Error fetching profile data');
+          setLoading(false);
         }
-        setLoading(false);
       }
     };
 
@@ -57,8 +67,8 @@ const Profile = () => {
         params: { page: page }
       });
 
-      setUserPosts(prevPosts => [...prevPosts, ...response.data.results]);  // Append new posts to the list
-      setHasMore(response.data.next !== null);  // Check if there are more pages
+      setUserPosts(prevPosts => [...prevPosts, ...response.data.results]);
+      setHasMore(response.data.next !== null);
       setNextPage(page + 1);
     } catch (error) {
       setError('Error fetching user posts');
@@ -67,38 +77,36 @@ const Profile = () => {
 
   const handleProfileUpdate = async (event) => {
     event.preventDefault();
-    
+
     const formData = new FormData();
-    formData.append('username', newUsername);
+    if (newUsername.trim() !== '') {
+      formData.append('username', newUsername);
+    }
     if (newProfilePicture) {
       formData.append('profile_picture', newProfilePicture);
     }
 
     try {
-      // Ensure Profile Update is Saved
       const response = await axios.patch('http://localhost:8000/api/v1/users/profile/update/', formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
 
-      console.log('Profile update response:', response.data); // Debugging: Check the response data
-
-      // Refetch Profile Data After Update
       const profileResponse = await axios.get('http://localhost:8000/api/v1/users/profile/', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
-      setProfileData(profileResponse.data); // Update the profile data with the latest from the server
+      setProfileData(profileResponse.data);
 
       alert('Profile updated successfully');
       setNewUsername('');
       setNewProfilePicture(null);
       fileInputRef.current.value = null;
+      setError('');
     } catch (error) {
-      setError('Error updating profile');
-      console.error('Profile update error:', error); // Debugging: Log the error
+      setError('Error updating profile. Please try again.');
     }
   };
 
@@ -116,8 +124,8 @@ const Profile = () => {
         }
       });
 
-      setUserPosts([response.data, ...userPosts]); // Add the new post to the top of the list
-      setNewPostContent(''); // Clear the post creation form
+      setUserPosts([response.data, ...userPosts]);
+      setNewPostContent('');
     } catch (error) {
       setError('Error creating post');
     }
@@ -131,12 +139,30 @@ const Profile = () => {
         }
       });
 
-      // Update the liked post in the state
       setUserPosts(userPosts.map(post => 
         post.id === postId ? { ...post, likes_count: post.likes_count + (response.data.message === 'Post liked' ? 1 : -1) } : post
       ));
     } catch (error) {
       setError('Error liking/unliking post');
+    }
+  };
+
+  const handlePostDelete = async (postId, retries = 3) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/posts/${postId}/delete/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      setUserPosts(userPosts.filter(post => post.id !== postId));
+      alert('Post deleted successfully');
+    } catch (error) {
+      if (error.response && error.response.status === 429 && retries > 0) {
+        setTimeout(() => handlePostDelete(postId, retries - 1), 1000);
+      } else {
+        setError('Error deleting post. Please try again later.');
+      }
     }
   };
 
@@ -180,6 +206,7 @@ const Profile = () => {
               <div className="card-body">
                 <h3 className="mb-4 text-center">Edit Profile</h3>
                 <form onSubmit={handleProfileUpdate}>
+                  {error && <div className="alert alert-danger">{error}</div>}
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label">Username</label>
                     <input
@@ -189,6 +216,7 @@ const Profile = () => {
                       className="form-control"
                       value={newUsername}
                       onChange={(e) => setNewUsername(e.target.value)}
+                      placeholder="Leave blank to keep current username"
                     />
                   </div>
                   <div className="mb-3">
@@ -198,7 +226,7 @@ const Profile = () => {
                       id="profile_picture"
                       name="profile_picture"
                       className="form-control"
-                      ref={fileInputRef} // Add reference to the file input
+                      ref={fileInputRef}
                       onChange={(e) => setNewProfilePicture(e.target.files[0])}
                     />
                   </div>
@@ -230,36 +258,39 @@ const Profile = () => {
             </div>
 
             {/* User Posts */}
-{userPosts.length > 0 ? (
-  userPosts.map((post, index) => (
-    <div
-      key={`${post.id}-${index}`}  // Create a unique key
-      className="card shadow-sm mb-4"
-      style={{ height: '300px' }}
-      ref={userPosts.length === index + 1 ? lastPostElementRef : null}
-    >
-      <div className="card-body d-flex flex-column">
-        <h5 className="card-title">{post.user}</h5>
-        <p className="card-text flex-grow-1 overflow-auto">{post.content}</p>
-        {post.image && <img src={post.image} alt="Post" className="img-fluid rounded mt-2" />}
-        {post.video && (
-          <video controls className="img-fluid rounded mt-2">
-            <source src={post.video} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        )}
-        <p className="text-muted mt-3">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
-        <button className="btn btn-outline-primary" onClick={() => handleLikeUnlike(post.id)}>
-          {post.likes_count} Like{post.likes_count !== 1 ? 's' : ''}
-        </button>
-      </div>
-    </div>
-  ))
-) : (
-  <p>No posts to display.</p>
-)}
-
-
+            {userPosts.length > 0 ? (
+              userPosts.map((post, index) => (
+                <div
+                  key={`${post.id}-${index}`}
+                  className="card shadow-sm mb-4"
+                  style={{ height: '300px' }}
+                  ref={userPosts.length === index + 1 ? lastPostElementRef : null}
+                >
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="card-title">{post.user}</h5>
+                    <p className="card-text flex-grow-1 overflow-auto">{post.content}</p>
+                    {post.image && <img src={post.image} alt="Post" className="img-fluid rounded mt-2" />}
+                    {post.video && (
+                      <video controls className="img-fluid rounded mt-2">
+                        <source src={post.video} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+                    <p className="text-muted mt-3">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
+                    <div className="d-flex justify-content-between mt-2">
+                      <button className="btn btn-outline-primary" onClick={() => handleLikeUnlike(post.id)}>
+                        {post.likes_count} Like{post.likes_count !== 1 ? 's' : ''}
+                      </button>
+                      <button className="btn btn-outline-danger" onClick={() => handlePostDelete(post.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No posts to display.</p>
+            )}
           </div>
 
           {/* Right Sidebar - Placeholder for future content */}

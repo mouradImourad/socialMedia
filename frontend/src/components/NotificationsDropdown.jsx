@@ -3,7 +3,11 @@ import Pusher from 'pusher-js';
 import { Dropdown } from 'react-bootstrap';
 
 const NotificationsDropdown = () => {
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState(() => {
+    // Load notifications from localStorage if available
+    const savedNotifications = localStorage.getItem('notifications');
+    return savedNotifications ? JSON.parse(savedNotifications) : [];
+  });
 
   useEffect(() => {
     // Initialize Pusher
@@ -17,7 +21,11 @@ const NotificationsDropdown = () => {
     // Bind to the event within the channel
     channel.bind('post-liked', function (data) {
       // Update the notifications state with the new notification
-      setNotifications((prevNotifications) => [...prevNotifications, data.message]);
+      const newNotifications = [...notifications, data.message];
+      setNotifications(newNotifications);
+      
+      // Save updated notifications to localStorage
+      localStorage.setItem('notifications', JSON.stringify(newNotifications));
     });
 
     // Cleanup on component unmount
@@ -25,7 +33,7 @@ const NotificationsDropdown = () => {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, []);
+  }, [notifications]);
 
   return (
     <Dropdown>

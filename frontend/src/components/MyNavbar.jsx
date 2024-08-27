@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Form, FormControl, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import NotificationsDropdown from './NotificationsDropdown'; // Import the NotificationsDropdown component
+import NotificationsDropdown from './NotificationsDropdown';
 
 const MyNavbar = () => {
     const navigate = useNavigate();
@@ -10,6 +10,7 @@ const MyNavbar = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('userId');
+        localStorage.removeItem('notifications'); // Clear notifications on logout
         navigate('/login');
     };
 
@@ -23,7 +24,6 @@ const MyNavbar = () => {
                         <Nav.Link href="/home">Home</Nav.Link>
                         <Nav.Link href="/profile">Profile</Nav.Link>
                         <Nav.Link href="/messages">Messages</Nav.Link>
-                        {/* Integrating the Notifications Dropdown */}
                         <NotificationsDropdown />
                     </Nav>
                     <Form className="d-flex ml-auto mr-3">

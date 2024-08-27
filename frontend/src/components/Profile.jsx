@@ -17,11 +17,12 @@ const Profile = () => {
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newPostContent, setNewPostContent] = useState('');
   const [userPosts, setUserPosts] = useState([]);
-  const [comments, setComments] = useState({}); // State for comments
-  const [nextPage, setNextPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [comments, setComments] = useState({}); 
+  const [showComments, setShowComments] = useState({});
   const [newCommentContent, setNewCommentContent] = useState(''); 
   const [commentError, setCommentError] = useState(''); 
+  const [nextPage, setNextPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true); 
   const fileInputRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
@@ -208,7 +209,6 @@ const Profile = () => {
             }
         });
 
-        // Optionally, update the UI with the new comment
         setNewCommentContent('');
         setCommentError('');
         fetchComments(postId);  // Fetch the updated comments after submission
@@ -216,6 +216,22 @@ const Profile = () => {
         console.error('Error submitting comment:', error); // Log the error
         setCommentError('Error submitting comment');
     }
+  };
+
+  const toggleCommentsVisibility = (postId) => {
+    setShowComments(prevState => ({
+      ...prevState,
+      [postId]: !prevState[postId] // Toggle the visibility state
+    }));
+  };
+
+  const handleButtonClick = (postId) => {
+    if (showComments[postId]) {
+      if (newCommentContent.trim() !== '') {
+        handleCommentSubmit(postId);
+      }
+    }
+    toggleCommentsVisibility(postId);
   };
 
   const lastPostElementRef = useCallback(node => {
@@ -340,32 +356,36 @@ const Profile = () => {
 
                     {/* Comment Section */}
                     <div className="mt-3">
-                      {comments[post.id] && comments[post.id].length > 0 && (
-                        <div className="mb-3">
-                          <h6>Comments:</h6>
-                          <ul className="list-group">
-                            {comments[post.id].map(comment => (
-                              <li key={comment.id} className="list-group-item">
-                                <strong>{comment.user}</strong>: {comment.content}
-                                <span className="text-muted float-end">{new Date(comment.created_at).toLocaleString()}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                      {showComments[post.id] && (
+                        <>
+                          {comments[post.id] && comments[post.id].length > 0 && (
+                            <div className="mb-3">
+                              <h6>Comments:</h6>
+                              <ul className="list-group">
+                                {comments[post.id].map(comment => (
+                                  <li key={comment.id} className="list-group-item">
+                                    <strong>{comment.user}</strong>: {comment.content}
+                                    <span className="text-muted float-end">{new Date(comment.created_at).toLocaleString()}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          <textarea
+                            className="form-control"
+                            placeholder="Write a comment..."
+                            value={newCommentContent}
+                            onChange={(e) => setNewCommentContent(e.target.value)}
+                            rows="2"
+                          ></textarea>
+                          {commentError && <div className="text-danger mt-1">{commentError}</div>}
+                        </>
                       )}
-                      <textarea
-                        className="form-control"
-                        placeholder="Write a comment..."
-                        value={newCommentContent}
-                        onChange={(e) => setNewCommentContent(e.target.value)}
-                        rows="2"
-                      ></textarea>
-                      {commentError && <div className="text-danger mt-1">{commentError}</div>}
                       <button
                         className="btn btn-outline-secondary mt-2"
-                        onClick={() => handleCommentSubmit(post.id)}
+                        onClick={() => handleButtonClick(post.id)}
                       >
-                        Comment
+                        {showComments[post.id] ? 'Hide Comments & Submit' : 'Show Comments'}
                       </button>
                     </div>
                   </div>

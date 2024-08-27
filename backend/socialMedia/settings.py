@@ -15,7 +15,7 @@ from datetime import timedelta
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import os
-
+import pusher
 
 
 sentry_sdk.init(
@@ -268,3 +268,13 @@ CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 
 # make sure to write the exeption code later for all the cashed views 
+
+# notification setting
+
+PUSHER_APP_ID = '1855743'
+PUSHER_KEY = 'ec08aaeb0eb7ff36b414'
+PUSHER_SECRET = '1a5b9dbe05f69502e1cb'
+PUSHER_CLUSTER = 'us2'
+PUSHER_SSL = True
+
+

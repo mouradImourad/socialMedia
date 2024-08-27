@@ -11,7 +11,9 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 import bleach
 from rest_framework.pagination import PageNumberPagination
-
+from django.conf import settings
+import pusher
+from .services.pusher_service import trigger_event 
 # Create your views here.
 
 
@@ -105,6 +107,14 @@ class PostDeleteView(generics.DestroyAPIView):
         instance.delete()
 
 
+pusher_client = pusher.Pusher(
+  app_id='1855743',
+  key='ec08aaeb0eb7ff36b414',
+  secret='1a5b9dbe05f69502e1cb',
+  cluster='us2',
+  ssl=True
+)
+
 
 class PostLikeUnlikeView(generics.UpdateAPIView):
     queryset = Post.objects.all()
@@ -121,6 +131,17 @@ class PostLikeUnlikeView(generics.UpdateAPIView):
         else:
             post.likes.add(user)
             message = 'Post liked'
+        # Trigger a Pusher event
+        try:
+            pusher_client.trigger('post-channel', 'post-liked', {
+                'post_id': post.id,
+                'user': user.username,
+                'message': message
+            })
+        except Exception as e:
+            
+            print(f"Pusher error: {e}")
+        
 
         return Response({'message': message}, status=status.HTTP_200_OK)
     

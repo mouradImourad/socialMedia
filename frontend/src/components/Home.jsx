@@ -2,6 +2,8 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import MyNavbar from './MyNavbar';
 import WeatherWidget from './WeatherWidget';
+import NewsWidget from './NewsWidget';
+
 
 function Home() {
   return (
@@ -27,7 +29,8 @@ function Home() {
 
           {/* Right Sidebar */}
           <Col md={3} className="bg-light p-4" style={{ width: '25%' }}>
-             <WeatherWidget /> 
+            <WeatherWidget />
+            <NewsWidget />
           </Col>
         </Row>
       </Container>

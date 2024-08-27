@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MyNavbar from './MyNavbar';
 import WeatherWidget from './WeatherWidget';
+import YouTubeWidget from './YouTubeWidget';
+import NewsWidget from './NewsWidget';
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({
@@ -398,6 +400,8 @@ const Profile = () => {
           {/* Right Sidebar - Placeholder for future content */}
           <div className="col-md-3" style={{ width: '30%' }}>
             <WeatherWidget />
+            <NewsWidget />
+            <YouTubeWidget />
           </div>
         </div>
       </div>

@@ -17,6 +17,7 @@ const Profile = () => {
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newPostContent, setNewPostContent] = useState('');
   const [userPosts, setUserPosts] = useState([]);
+  const [comments, setComments] = useState({}); // State for comments
   const [nextPage, setNextPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [newCommentContent, setNewCommentContent] = useState(''); 
@@ -71,8 +72,31 @@ const Profile = () => {
       setUserPosts(prevPosts => [...prevPosts, ...response.data.results]);
       setHasMore(response.data.next !== null);
       setNextPage(page + 1);
+
+      // Fetch comments for each post
+      response.data.results.forEach(post => {
+        fetchComments(post.id);
+      });
+
     } catch (error) {
       setError('Error fetching user posts');
+    }
+  };
+
+  const fetchComments = async (postId) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/v1/posts/${postId}/comments/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      setComments(prevComments => ({
+        ...prevComments,
+        [postId]: response.data.results
+      }));
+    } catch (error) {
+      console.error('Error fetching comments:', error);
     }
   };
 
@@ -184,15 +208,15 @@ const Profile = () => {
             }
         });
 
-        
+        // Optionally, update the UI with the new comment
         setNewCommentContent('');
         setCommentError('');
+        fetchComments(postId);  // Fetch the updated comments after submission
     } catch (error) {
-        console.error('Error submitting comment:', error); 
+        console.error('Error submitting comment:', error); // Log the error
         setCommentError('Error submitting comment');
     }
-};
-
+  };
 
   const lastPostElementRef = useCallback(node => {
     if (loading) return;
@@ -316,6 +340,19 @@ const Profile = () => {
 
                     {/* Comment Section */}
                     <div className="mt-3">
+                      {comments[post.id] && comments[post.id].length > 0 && (
+                        <div className="mb-3">
+                          <h6>Comments:</h6>
+                          <ul className="list-group">
+                            {comments[post.id].map(comment => (
+                              <li key={comment.id} className="list-group-item">
+                                <strong>{comment.user}</strong>: {comment.content}
+                                <span className="text-muted float-end">{new Date(comment.created_at).toLocaleString()}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                       <textarea
                         className="form-control"
                         placeholder="Write a comment..."

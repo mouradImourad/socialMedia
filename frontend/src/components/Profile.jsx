@@ -17,12 +17,12 @@ const Profile = () => {
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newPostContent, setNewPostContent] = useState('');
   const [userPosts, setUserPosts] = useState([]);
-  const [comments, setComments] = useState({}); 
-  const [showComments, setShowComments] = useState({});
+  const [comments, setComments] = useState({}); // State for comments
+  const [nextPage, setNextPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [newCommentContent, setNewCommentContent] = useState(''); 
   const [commentError, setCommentError] = useState(''); 
-  const [nextPage, setNextPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true); 
+  const [visibleComments, setVisibleComments] = useState({}); // State for toggling comments visibility
   const fileInputRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
@@ -209,6 +209,7 @@ const Profile = () => {
             }
         });
 
+        // Optionally, update the UI with the new comment
         setNewCommentContent('');
         setCommentError('');
         fetchComments(postId);  // Fetch the updated comments after submission
@@ -219,19 +220,11 @@ const Profile = () => {
   };
 
   const toggleCommentsVisibility = (postId) => {
-    setShowComments(prevState => ({
+    setVisibleComments((prevState) => ({
       ...prevState,
-      [postId]: !prevState[postId] // Toggle the visibility state
+      [postId]: !prevState[postId]
     }));
-  };
-
-  const handleButtonClick = (postId) => {
-    if (showComments[postId]) {
-      if (newCommentContent.trim() !== '') {
-        handleCommentSubmit(postId);
-      }
-    }
-    toggleCommentsVisibility(postId);
+    setCommentError('');
   };
 
   const lastPostElementRef = useCallback(node => {
@@ -254,7 +247,7 @@ const Profile = () => {
       <div className="container mt-5">
         <div className="row">
           {/* Left Sidebar - Profile Picture and Update Form */}
-          <div className="col-md-3">
+          <div className="col-md-3" style={{ width: '30%' }}>
             <div className="card shadow-sm mb-4">
               <div className="card-body text-center">
                 <div className="mb-4">
@@ -305,7 +298,7 @@ const Profile = () => {
           </div>
 
           {/* Middle Content Area - Post Creation and User Posts */}
-          <div className="col-md-6">
+          <div className="col-md-6" style={{ width: '40%' }}>
             {/* Post Creation */}
             <div className="card shadow-sm mb-4">
               <div className="card-body">
@@ -331,7 +324,7 @@ const Profile = () => {
                 <div
                   key={`${post.id}-${index}`}
                   className="card shadow-sm mb-4"
-                  style={{ height: '300px' }}
+                  style={{ height: 'auto' }}
                   ref={userPosts.length === index + 1 ? lastPostElementRef : null}
                 >
                   <div className="card-body d-flex flex-column">
@@ -355,39 +348,43 @@ const Profile = () => {
                     </div>
 
                     {/* Comment Section */}
-                    <div className="mt-3">
-                      {showComments[post.id] && (
-                        <>
-                          {comments[post.id] && comments[post.id].length > 0 && (
-                            <div className="mb-3">
-                              <h6>Comments:</h6>
-                              <ul className="list-group">
-                                {comments[post.id].map(comment => (
-                                  <li key={comment.id} className="list-group-item">
-                                    <strong>{comment.user}</strong>: {comment.content}
-                                    <span className="text-muted float-end">{new Date(comment.created_at).toLocaleString()}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                          <textarea
-                            className="form-control"
-                            placeholder="Write a comment..."
-                            value={newCommentContent}
-                            onChange={(e) => setNewCommentContent(e.target.value)}
-                            rows="2"
-                          ></textarea>
-                          {commentError && <div className="text-danger mt-1">{commentError}</div>}
-                        </>
-                      )}
-                      <button
-                        className="btn btn-outline-secondary mt-2"
-                        onClick={() => handleButtonClick(post.id)}
-                      >
-                        {showComments[post.id] ? 'Hide Comments & Submit' : 'Show Comments'}
-                      </button>
-                    </div>
+                    {visibleComments[post.id] && (
+                      <>
+                        {comments[post.id] && comments[post.id].length > 0 && (
+                          <div className="mb-3 mt-3">
+                            <h6>Comments:</h6>
+                            <ul className="list-group">
+                              {comments[post.id].map(comment => (
+                                <li key={comment.id} className="list-group-item">
+                                  <strong>{comment.user}</strong>: {comment.content}
+                                  <span className="text-muted float-end">{new Date(comment.created_at).toLocaleString()}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <textarea
+                          className="form-control mt-3"
+                          placeholder="Write a comment..."
+                          value={newCommentContent}
+                          onChange={(e) => setNewCommentContent(e.target.value)}
+                          rows="2"
+                        ></textarea>
+                        {commentError && <div className="text-danger mt-1">{commentError}</div>}
+                        <button
+                          className="btn btn-primary mt-2"
+                          onClick={() => handleCommentSubmit(post.id)}
+                        >
+                          Submit Comment
+                        </button>
+                      </>
+                    )}
+                    <button
+                      className="btn btn-outline-secondary mt-2"
+                      onClick={() => toggleCommentsVisibility(post.id)}
+                    >
+                      {visibleComments[post.id] ? "Hide Comments" : "Show Comments"}
+                    </button>
                   </div>
                 </div>
               ))
@@ -397,7 +394,7 @@ const Profile = () => {
           </div>
 
           {/* Right Sidebar - Placeholder for future content */}
-          <div className="col-md-3">
+          <div className="col-md-3" style={{ width: '30%' }}>
             {/* Future content can go here */}
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import MyNavbar from './MyNavbar';
+import WeatherWidget from './WeatherWidget';
 
 function Home() {
   return (
@@ -26,8 +27,7 @@ function Home() {
 
           {/* Right Sidebar */}
           <Col md={3} className="bg-light p-4" style={{ width: '25%' }}>
-            <h4>Right Sidebar</h4>
-            <p>This can include ads, links to trending topics, or any other content you'd like to showcase.</p>
+             <WeatherWidget /> 
           </Col>
         </Row>
       </Container>

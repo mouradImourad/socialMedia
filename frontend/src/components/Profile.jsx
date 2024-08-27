@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MyNavbar from './MyNavbar';
+import WeatherWidget from './WeatherWidget';
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({
@@ -27,6 +28,7 @@ const Profile = () => {
   const observer = useRef();
   const navigate = useNavigate();
   const lastFetchTime = useRef(0);
+  
 
   useEffect(() => {
     const fetchProfileData = async (retryCount = 3, delay = 1000) => {
@@ -395,7 +397,7 @@ const Profile = () => {
 
           {/* Right Sidebar - Placeholder for future content */}
           <div className="col-md-3" style={{ width: '30%' }}>
-            {/* Future content can go here */}
+            <WeatherWidget />
           </div>
         </div>
       </div>

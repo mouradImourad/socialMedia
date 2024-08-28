@@ -1,8 +1,8 @@
 import React, { useContext, useRef, useCallback, useState } from 'react';
 import MyNavbar from './MyNavbar';
 import WeatherWidget from './WeatherWidget';
-import YouTubeWidget from './YouTubeWidget';
-import NewsWidget from './NewsWidget';
+// import YouTubeWidget from './YouTubeWidget';
+// import NewsWidget from './NewsWidget';
 import PostsContext from './PostsContext';
 
 const Home = () => {
@@ -152,8 +152,8 @@ const Home = () => {
           {/* Right Sidebar */}
           <div className="col-md-3" style={{ flexBasis: '30%' }}>
             <WeatherWidget />
-            <NewsWidget />
-            <YouTubeWidget />
+            {/* <NewsWidget /> */}
+            {/* <YouTubeWidget /> */}
           </div>
         </div>
       </div>

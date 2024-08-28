@@ -58,6 +58,9 @@ class PostListView(generics.ListAPIView):
     serializer_class = PostSerializer
     pagination_class = StandardResultsSetPagination
 
+    def get_queryset(self):
+        return Post.objects.all().order_by('-created_at')
+
 
 @method_decorator(cache_page(60 * 15), name='dispatch')
 class PostDetailView(generics.RetrieveAPIView):

@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef, useCallback, useContext } from 'rea
 import { useNavigate } from 'react-router-dom';
 import MyNavbar from './MyNavbar';
 import WeatherWidget from './WeatherWidget';
-import YouTubeWidget from './YouTubeWidget';
-import NewsWidget from './NewsWidget';
+// import YouTubeWidget from './YouTubeWidget';
+// import NewsWidget from './NewsWidget';
 import PostsContext from './PostsContext';
 import axios from 'axios';
 
@@ -26,22 +26,29 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/v1/users/profile/', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-        setProfileData(response.data);
-        setNewUsername(response.data.username);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          navigate('/login');
-        } else {
-          console.error('Error fetching profile data:', error);
-        }
+  try {
+    const response = await axios.get('http://localhost:8000/api/v1/users/profile/', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
-    };
+    });
+    setProfileData(response.data);
+    setNewUsername(response.data.username);
+  } catch (error) {
+    if (error.response && error.response.status === 403) {
+      // Redirect to login or display an error message
+      console.error('Forbidden: You do not have permission to access this resource.');
+      navigate('/login');
+    } else if (error.response && error.response.status === 401) {
+      // Redirect to login page if unauthorized
+      console.error('Unauthorized: Please log in.');
+      navigate('/login');
+    } else {
+      console.error('Error fetching profile data:', error);
+    }
+  }
+};
+
 
     fetchProfileData();
     fetchPosts(1); // Fetch the posts again to ensure they are updated
@@ -262,8 +269,8 @@ const Profile = () => {
           {/* Right Sidebar - Weather, News, and YouTube Widgets */}
           <div className="col-md-3" style={{ flexBasis: '30%' }}>
             <WeatherWidget />
-            <NewsWidget />
-            <YouTubeWidget />
+            {/* <NewsWidget /> */}
+            {/* <YouTubeWidget /> */}
           </div>
         </div>
       </div>

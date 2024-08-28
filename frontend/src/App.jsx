@@ -17,7 +17,7 @@ function App() {
         <Route path="/en/api/v1/users/email-verify" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/Profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );

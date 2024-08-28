@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MyNavbar from './MyNavbar';
 import WeatherWidget from './WeatherWidget';
 import YouTubeWidget from './YouTubeWidget';
 import NewsWidget from './NewsWidget';
+import PostsContext from './PostsContext';
+import axios from 'axios';
 
 const Profile = () => {
+  const { posts, addPost, deletePost, likeUnlikePost, addComment, comments, fetchComments, loading, error, hasMore, nextPage, fetchPosts } = useContext(PostsContext);
   const [profileData, setProfileData] = useState({
     email: '',
     username: '',
@@ -14,32 +16,16 @@ const Profile = () => {
     created_at: '',
     updated_at: ''
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newPostContent, setNewPostContent] = useState('');
-  const [userPosts, setUserPosts] = useState([]);
-  const [comments, setComments] = useState({}); // State for comments
-  const [nextPage, setNextPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [newCommentContent, setNewCommentContent] = useState(''); 
-  const [commentError, setCommentError] = useState(''); 
-  const [visibleComments, setVisibleComments] = useState({}); // State for toggling comments visibility
+  const [visibleComments, setVisibleComments] = useState({});
   const fileInputRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
-  const lastFetchTime = useRef(0);
-  
 
   useEffect(() => {
-    const fetchProfileData = async (retryCount = 3, delay = 1000) => {
-      const now = Date.now();
-      if (now - lastFetchTime.current < 1000) {
-        return;
-      }
-      lastFetchTime.current = now;
-
+    const fetchProfileData = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/v1/users/profile/', {
           headers: {
@@ -48,62 +34,18 @@ const Profile = () => {
         });
         setProfileData(response.data);
         setNewUsername(response.data.username);
-        fetchUserPosts(response.data.id, 1);
-        setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 429 && retryCount > 0) {
-          setTimeout(() => fetchProfileData(retryCount - 1, delay * 2), delay);
-        } else if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           navigate('/login');
         } else {
-          setError('Error fetching profile data');
-          setLoading(false);
+          console.error('Error fetching profile data:', error);
         }
       }
     };
 
     fetchProfileData();
-  }, [navigate]);
-
-  const fetchUserPosts = async (userId, page) => {
-    try {
-      const response = await axios.get(`http://localhost:8000/api/v1/posts/user/${userId}/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        params: { page: page }
-      });
-
-      setUserPosts(prevPosts => [...prevPosts, ...response.data.results]);
-      setHasMore(response.data.next !== null);
-      setNextPage(page + 1);
-
-      // Fetch comments for each post
-      response.data.results.forEach(post => {
-        fetchComments(post.id);
-      });
-
-    } catch (error) {
-      setError('Error fetching user posts');
-    }
-  };
-
-  const fetchComments = async (postId) => {
-    try {
-      const response = await axios.get(`http://localhost:8000/api/v1/posts/${postId}/comments/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
-
-      setComments(prevComments => ({
-        ...prevComments,
-        [postId]: response.data.results
-      }));
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    }
-  };
+    fetchPosts(1); // Fetch the posts again to ensure they are updated
+  }, [navigate, fetchPosts]);
 
   const handleProfileUpdate = async (event) => {
     event.preventDefault();
@@ -117,7 +59,7 @@ const Profile = () => {
     }
 
     try {
-      const response = await axios.patch('http://localhost:8000/api/v1/users/profile/update/', formData, {
+      await axios.patch('http://localhost:8000/api/v1/users/profile/update/', formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
@@ -134,101 +76,22 @@ const Profile = () => {
       setNewUsername('');
       setNewProfilePicture(null);
       fileInputRef.current.value = null;
-      setError('');
     } catch (error) {
-      setError('Error updating profile. Please try again.');
+      console.error('Error updating profile:', error);
     }
   };
 
   const handlePostCreation = async (event) => {
     event.preventDefault();
-
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/posts/create/', 
-      {
-        content: newPostContent
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
-
-      setUserPosts([response.data, ...userPosts]);
-      setNewPostContent('');
-    } catch (error) {
-      setError('Error creating post');
-    }
-  };
-
-  const handleLikeUnlike = async (postId) => {
-    try {
-      const response = await axios.put(`http://localhost:8000/api/v1/posts/${postId}/like/`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
-
-      setUserPosts(userPosts.map(post => 
-        post.id === postId ? { ...post, likes_count: post.likes_count + (response.data.message === 'Post liked' ? 1 : -1) } : post
-      ));
-    } catch (error) {
-      setError('Error liking/unliking post');
-    }
-  };
-
-  const handlePostDelete = async (postId, retries = 3) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/v1/posts/${postId}/delete/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
-
-      setUserPosts(userPosts.filter(post => post.id !== postId));
-      alert('Post deleted successfully');
-    } catch (error) {
-      if (error.response && error.response.status === 429 && retries > 0) {
-        setTimeout(() => handlePostDelete(postId, retries - 1), 1000);
-      } else {
-        setError('Error deleting post. Please try again later.');
-      }
-    }
-  };
-
-  const handleCommentSubmit = async (postId) => {
-    if (newCommentContent.trim() === '') {
-        setCommentError('Comment cannot be empty');
-        return;
-    }
-
-    try {
-        const response = await axios.post(`http://localhost:8000/api/v1/posts/${postId}/comment/`, 
-        {
-            content: newCommentContent
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        });
-
-        // Optionally, update the UI with the new comment
-        setNewCommentContent('');
-        setCommentError('');
-        fetchComments(postId);  // Fetch the updated comments after submission
-    } catch (error) {
-        console.error('Error submitting comment:', error); // Log the error
-        setCommentError('Error submitting comment');
-    }
+    await addPost(newPostContent);
+    setNewPostContent('');
   };
 
   const toggleCommentsVisibility = (postId) => {
-    setVisibleComments((prevState) => ({
+    setVisibleComments(prevState => ({
       ...prevState,
       [postId]: !prevState[postId]
     }));
-    setCommentError('');
   };
 
   const lastPostElementRef = useCallback(node => {
@@ -236,11 +99,11 @@ const Profile = () => {
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && hasMore) {
-        fetchUserPosts(profileData.id, nextPage);
+        fetchPosts(nextPage);
       }
     });
     if (node) observer.current.observe(node);
-  }, [loading, hasMore, nextPage, profileData.id]);
+  }, [loading, hasMore, nextPage, fetchPosts]);
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="alert alert-danger mt-5">{error}</div>;
@@ -248,10 +111,10 @@ const Profile = () => {
   return (
     <>
       <MyNavbar />
-      <div className="container mt-5">
-        <div className="row">
+      <div className="container-fluid mt-5" style={{ padding: '0 10px' }}>
+        <div className="row no-gutters">
           {/* Left Sidebar - Profile Picture and Update Form */}
-          <div className="col-md-3" style={{ width: '30%' }}>
+          <div className="col-md-3" style={{ flexBasis: '30%' }}>
             <div className="card shadow-sm mb-4">
               <div className="card-body text-center">
                 <div className="mb-4">
@@ -271,7 +134,6 @@ const Profile = () => {
               <div className="card-body">
                 <h3 className="mb-4 text-center">Edit Profile</h3>
                 <form onSubmit={handleProfileUpdate}>
-                  {error && <div className="alert alert-danger">{error}</div>}
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label">Username</label>
                     <input
@@ -302,7 +164,7 @@ const Profile = () => {
           </div>
 
           {/* Middle Content Area - Post Creation and User Posts */}
-          <div className="col-md-6" style={{ width: '40%' }}>
+          <div className="col-md-4" style={{ flexBasis: '40%' }}>
             {/* Post Creation */}
             <div className="card shadow-sm mb-4">
               <div className="card-body">
@@ -323,13 +185,13 @@ const Profile = () => {
             </div>
 
             {/* User Posts */}
-            {userPosts.length > 0 ? (
-              userPosts.map((post, index) => (
+            {posts.length > 0 ? (
+              posts.filter(post => post.user === profileData.username).map((post, index) => (
                 <div
                   key={`${post.id}-${index}`}
                   className="card shadow-sm mb-4"
                   style={{ height: 'auto' }}
-                  ref={userPosts.length === index + 1 ? lastPostElementRef : null}
+                  ref={posts.length === index + 1 ? lastPostElementRef : null}
                 >
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{post.user}</h5>
@@ -343,10 +205,10 @@ const Profile = () => {
                     )}
                     <p className="text-muted mt-3">Posted on: {new Date(post.created_at).toLocaleDateString()}</p>
                     <div className="d-flex justify-content-between mt-2">
-                      <button className="btn btn-outline-primary" onClick={() => handleLikeUnlike(post.id)}>
+                      <button className="btn btn-outline-primary" onClick={() => likeUnlikePost(post.id)}>
                         {post.likes_count} Like{post.likes_count !== 1 ? 's' : ''}
                       </button>
-                      <button className="btn btn-outline-danger" onClick={() => handlePostDelete(post.id)}>
+                      <button className="btn btn-outline-danger" onClick={() => deletePost(post.id)}>
                         Delete
                       </button>
                     </div>
@@ -377,7 +239,7 @@ const Profile = () => {
                         {commentError && <div className="text-danger mt-1">{commentError}</div>}
                         <button
                           className="btn btn-primary mt-2"
-                          onClick={() => handleCommentSubmit(post.id)}
+                          onClick={() => addComment(post.id, newCommentContent)}
                         >
                           Submit Comment
                         </button>
@@ -397,8 +259,8 @@ const Profile = () => {
             )}
           </div>
 
-          {/* Right Sidebar - Placeholder for future content */}
-          <div className="col-md-3" style={{ width: '30%' }}>
+          {/* Right Sidebar - Weather, News, and YouTube Widgets */}
+          <div className="col-md-3" style={{ flexBasis: '30%' }}>
             <WeatherWidget />
             <NewsWidget />
             <YouTubeWidget />
